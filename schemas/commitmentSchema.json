@@ -1,0 +1,20 @@
+{
+	"type":"object",
+	"id": "commitment",
+	"required":["finalCommits","certsFile","extraCommits"],
+	"additionalProperties":false,
+	"properties":{
+		"finalCommits": {
+			"type":"string",
+			"id": "finalCommits"
+		},
+		"certsFile": {
+			"type":"string",
+			"id": "certsFile"
+		},
+		"extraCommits": {
+			"type":"string",
+			"id": "extraCommits"
+		}
+	}
+}

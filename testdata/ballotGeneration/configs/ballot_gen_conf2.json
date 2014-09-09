@@ -1,0 +1,14 @@
+{
+"races":
+[
+{"id":"la",
+"candidates":15},
+{"id":"lc_atl",
+"candidates":10},
+{"id":"lc_btl",
+"candidates":54}],
+"ballotToGenerate":100,
+"BallotOutputFolder":"./ballots",
+"ballotList":"ballots.json",
+"ballotDB":"ballotDB.json"
+}

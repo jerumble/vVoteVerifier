@@ -1,0 +1,56 @@
+{
+	"type":"object",
+	"id": "ballotGen",
+	"required":["finalCommits","baseEncryptedCandidateIds","plaintextCandidateIds","publicKey","districtConfig","ballotGenConf","commitData","ciphersData","auditData","certsFile","ballotSubmitResponse","extraCommits"],
+	"additionalProperties":false,
+	"properties":{
+		"finalCommits": {
+			"type":"string",
+			"id": "finalCommits"
+		},
+		"baseEncryptedCandidateIds": {
+			"type":"string",
+			"id": "baseEncryptedCandidateIds"
+		},
+		"plaintextCandidateIds": {
+			"type":"string",
+			"id": "plaintextCandidateIds"
+		},
+		"publicKey": {
+			"type":"string",
+			"id": "publicKey"
+		},
+		"districtConfig": {
+			"type":"string",
+			"id": "districtConfig"
+		},
+		"ballotGenConf": {
+			"type":"string",
+			"id": "ballotGenConf"
+		},
+		"commitData": {
+			"type":"string",
+			"id": "commitData"
+		},
+		"ciphersData": {
+			"type":"string",
+			"id": "ciphersData"
+		},
+		"auditData": {
+			"type":"string",
+			"id": "auditData"
+		},
+		"certsFile": {
+			"type":"string",
+			"id": "certsFile"
+		},
+		"ballotSubmitResponse": {
+			"type":"string",
+			"id": "ballotSubmitResponse"
+		},
+		"extraCommits": {
+			"type":"string",
+			"id": "extraCommits"
+		}
+	}
+}

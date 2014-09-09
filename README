@@ -1,0 +1,44 @@
+The vVoteVerifier project is a stand-alone independent reference implementation of a verifier for the vVote system.
+The vVote System is an end-to-end verifiable electronic election system based on the Prêt à Voter election scheme. 
+vVote was designed and built to be used as part of the State Election taking place in Victoria, Australia in November 2014. 
+vVote provides three core pieces of verifiable evidence including:
+	- Cast-as-intended – That each vote was cast in the way it was intended.
+	- Counted-as-cast – That each vote was counted in the way it was cast.
+	- Universally verifiable tallying – That the tallying process is verifiable.
+
+The verification process of the vVote system will focus specifically on a number of protocols or
+processes carried out including:
+
+	- Ballot generation – The Ballot Generation process takes place during the pre-voting stage of
+	the election and involves the production of generic ballots containing randomly permuted
+	candidate names along with the candidate permutations. The random candidate
+	permutation is constructed using combined randomness values generated and
+	communicated by a number of independent randomness generation servers. The
+	verification process involves the auditing of a randomly selected set of generic ballots. Each
+	audit involves the recalculation and verification of the generic ballot.
+
+	- Vote packing – The Vote Packing process is used to reduce the amount of work carried out
+	by the Mixnet during the tallying phase of the election. The vVote system uses a Mixnet to
+	shuffle the voter preferences which are represented by re-encrypted candidate identifiers
+	sorted into preference order. The vVote system uses a method of packing together multiple
+	re-encrypted candidate identifiers before passing them to the Mixnet meaning far fewer
+	ciphertexts require shuffling and decryption thereby producing significant efficiency
+	benefits. The verification process is two-fold.
+		1. The first check is used to verify that the ciphertexts provided to the Mixnet have
+	been correctly packed according to the set of underlying voter preferences and that
+	the packings match those that were input to the Mixnet.
+		2. The second check is used to verify that the decryptions from the Mixnet,
+	corresponding to packed plaintexts, correctly match the packing of the plaintext
+	candidate identifiers using the claimed preferences from the Mixnet output.
+
+	- Commits made to the Public WBB – The Public WBB is used by the system to make available
+	publicly relevant information which can be used in the verification process for other
+	components such as the Vote Packing and Ballot Generation processes. The Public WBB is
+	simply updated once per day as separate commitments. Each commitment consists of a
+	JSON message file, an attachment ZIP file and a JSON signature file. The verification process
+	involves a check that for each commit a signature was correctly calculated over the data.
+	This check is used to verify that information has not been modified or implanted onto the
+	Public WBB in an unauthorised manner.
+	
+A detailed overview of the vVoteVerifier system and significant background information can be found in the included document - vVoteVerifier.pdf.
+The deployment and user guide can be found in the included document - deployment_and_user_manual.pdf and can be used to setup and run the vVoteVerifier system.

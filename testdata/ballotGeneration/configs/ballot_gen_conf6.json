@@ -1,0 +1,7 @@
+{
+"ballotsToAudit":10,
+"ballotToGenerate":100,
+"BallotOutputFolder":"./ballots",
+"ballotList":"ballots.json",
+"ballotDB":"ballotDB.json"
+}

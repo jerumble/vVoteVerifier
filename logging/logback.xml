@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<configuration>
+  	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+  		<filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+      		<level>INFO</level>
+    	</filter>
+    	<!-- encoders are assigned the type
+    	ch.qos.logback.classic.encoder.PatternLayoutEncoder by default -->
+    	<encoder>
+      		<pattern>%d{HH:mm:ss.SSS} %-5level %logger{36} - %msg%n</pattern>
+    	</encoder>
+  	</appender>
+
+    <appender name="FILE" class="ch.qos.logback.core.FileAppender">
+        <file>./logs/logfile.log</file>
+        <append>false</append>
+        <!-- uncomment to turn off debug logs completely
+  		<filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+      		<level>INFO</level>
+    	</filter>
+    	-->
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} %-5level %class - %msg %n</pattern>
+        </encoder>
+    </appender>
+    <appender name="results-FILE" class="ch.qos.logback.core.FileAppender">
+        <file>./logs/results.log</file>
+        <append>false</append>
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} %-5level %class{0} - %msg %n</pattern>
+        </encoder>
+    </appender>
+    <!-- additivity=false ensures analytics data only goes to the analytics log -->
+    <logger name="results" additivity="false">
+        <appender-ref ref="results-FILE"/>
+        <appender-ref ref="STDOUT"/>
+    </logger>
+    <root>
+        <appender-ref ref="STDOUT"/>
+        <appender-ref ref="FILE"/>
+    </root>
+</configuration>

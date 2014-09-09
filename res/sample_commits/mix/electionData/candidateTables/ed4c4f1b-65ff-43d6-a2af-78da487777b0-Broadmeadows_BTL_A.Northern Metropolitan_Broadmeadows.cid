@@ -1,0 +1,60 @@
+{
+  "RaceId": "ed4c4f1b-65ff-43d6-a2af-78da487777b0",
+  "RaceName": "Northern Metropolitan",
+  "RaceType": "BTL",
+  "CandidateIds": [
+    {
+      "x": "b8346c65ccb58c0cbcfb482ef587f5100986be08793f862f25db8c5f99ad9b7c",
+      "y": "146d21a286af11a75d90ece3345285f3f4a2bc2c4165e7f1ffa7e7aa761884e1"
+    },
+    {
+      "x": "6029829b23d332a7ca0a06ce291d8f49af856038419259ae88cb7ca1cb94d6bf",
+      "y": "e5a10d8208fd3866c1421d7567bf22f0616514780adbb14833ed95f6f6e526d7"
+    },
+    {
+      "x": "c66fed23eb677ec6e03f35de6f624cbbb3cc2a68172a5ecd1d5299f4dcbba912",
+      "y": "9c78f31bea34052396ac37627f17ca39e1fca323137ad0c377ef5655b8dc7f95"
+    },
+    {
+      "x": "c5e015e70768dfedd3aa650f4a4c78e0231572a4f9df634231227fbb4a4ef8bb",
+      "y": "12d9d9c7f29556bfadc05284e4dcc1a6702d604c46ba92414c74981096dcca30"
+    },
+    {
+      "x": "a5530c10d8eccbe4e59068272c39d3c947fc7dc98b845a05ff6cead71089a423",
+      "y": "7c236968f7ed7c00853bfa35c877b85a2d11f20b22291e618723de57f2d5b8b2"
+    },
+    {
+      "x": "81eb3bfcb34a0db5ed703c2141e3ae497a70e4e3617f7d0538b8f359fe1f43e8",
+      "y": "c90ec8320196bc400f1319d99a93f8f01f2972c26bb109c1f8e370f1839d6425"
+    },
+    {
+      "x": "658d8ceec72ecc6db7fe1979a27e12f80a4844d3eb1680d9d1591781097721af",
+      "y": "8c53aa5dd4fbcc033b1028c8c49aac9f685e332660abba82f68534e0947d2327"
+    },
+    {
+      "x": "48bdd637d7cacd4259d8790023a28ad08c0d8ea408853583de5b6e2a6dbb58ef",
+      "y": "efaac0a7aa9b1a722b2217b524a644a2ebe8c7ac0f77edd20d920078d733f88a"
+    },
+    {
+      "x": "c404ed55bd3bd2b8fdc9f1446804514c8837dd4ed04b36e305c60dbf8e351855",
+      "y": "f8b220ef654e2c7562a571862c5a59a52e9cf25aa3532da8d735ee9117139161"
+    },
+    {
+      "x": "bbb334797af25dd56c1202d66c3e28048b9661f2110e8f8e0768d8b49ee7d036",
+      "y": "7ab4987c8897555240936a5294b890056018c1394119bc137b6c14b39e8b8f81"
+    },
+    {
+      "x": "68385823f8f0e069fb165da0532bf14db8b2fb603ff421b3bbc0ddf31eb7b324",
+      "y": "918a0b9e70c9b25b041609df0c5dadf80f0cabdbdbf8222f1b5661b751761145"
+    },
+    {
+      "x": "ce3c02cd77fb15c550184e44663230d33a5e9b2b8f5e41bba55bfe871b16d78d",
+      "y": "d7d144f20a87cd3956e083566921036d6d6e571fb609127483598c7e8e08084e"
+    },
+    {
+      "x": "5d1307ca2e07f6c98ea666ac038d68a9e62b94adf0d6b6f3e59a0da9fa0fc2b9",
+      "y": "d2d66febff06150bfeabc46dd55be761e0786ad332f6ec01749d000242170f35"
+    }
+  ],
+  "DistrictName": "Broadmeadows"
+}

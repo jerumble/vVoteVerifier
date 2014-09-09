@@ -1,0 +1,60 @@
+{
+	"type":"object",
+	"id": "votePacking",
+	"required":["finalCommits","baseEncryptedCandidateIds","plaintextCandidateIds","publicKey","districtConfig","ballotGenConf","ciphersData","certsFile","mapProperties","mixOutput","mixInput","extraCommits","raceMap"],
+	"additionalProperties":false,
+	"properties":{
+		"finalCommits": {
+			"type":"string",
+			"id": "finalCommits"
+		},
+		"baseEncryptedCandidateIds": {
+			"type":"string",
+			"id": "baseEncryptedCandidateIds"
+		},
+		"plaintextCandidateIds": {
+			"type":"string",
+			"id": "plaintextCandidateIds"
+		},
+		"publicKey": {
+			"type":"string",
+			"id": "publicKey"
+		},
+		"districtConfig": {
+			"type":"string",
+			"id": "districtConfig"
+		},
+		"ballotGenConf": {
+			"type":"string",
+			"id": "ballotGenConf"
+		},
+		"ciphersData": {
+			"type":"string",
+			"id": "ciphersData"
+		},
+		"certsFile": {
+			"type":"string",
+			"id": "certsFile"
+		},
+		"mapProperties": {
+			"type":"string",
+			"id": "mapProperties"
+		},
+		"mixOutput": {
+			"type":"string",
+			"id": "mixOutput"
+		},
+		"mixInput": {
+			"type":"string",
+			"id": "mixInput"
+		},
+		"extraCommits": {
+			"type":"string",
+			"id": "extraCommits"
+		},
+		"raceMap": {
+			"type":"string",
+			"id": "raceMap"
+		}
+	}
+}

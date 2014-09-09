@@ -1,0 +1,7 @@
+curve: secp256r1
+use.direct: ATL
+padding.file: paddingpoint.json
+table.btl.file: lcBTL_Table
+table.btl.linelength: 36
+table.btl.packing: 3
+candidate.tables: la_Table

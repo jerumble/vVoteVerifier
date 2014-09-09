@@ -1,0 +1,15 @@
+{
+"races":
+[
+{"id":"la",
+"candidates":20},
+{"id":"lc_atl",
+"candidates":10},
+{"id":"lc_btl",
+"candidates":50}],
+"ballotsToAudit":10,
+"ballotToGenerate":1000,
+"BallotOutputFolder":"./demo/TestDeviceOne/ballots",
+"ballotList":"./demo/TestDeviceOne/ballots.json",
+"ballotDB":"./demo/TestDeviceOne/ballotDB.json"
+}

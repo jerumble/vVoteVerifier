@@ -1,0 +1,14 @@
+{
+	"finalCommits":"final_commits",
+	"baseEncryptedCandidateIds":"base_encrypted_ids.json",
+	"plaintextCandidateIds":"plaintexts_ids.json",
+	"publicKey":"publickey.json",
+	"districtConfig":"districtconf.json",
+	"ballotGenConf":"ballot_gen_conf.json",
+	"commitData":"commitData.json",
+	"ciphersData":"ciphers.json",
+	"auditData":"AuditDataFile.json",
+	"certsFile":"certs.bks",
+	"ballotSubmitResponse":"BallotSubmitResponseFile.json",
+	"extraCommits":"extra_commits"
+}

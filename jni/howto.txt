@@ -1,0 +1,42 @@
+OS Setup
+
+	Windows:
+		Install mingw or other compiler
+		Install openssl windows version: http://slproweb.com/products/Win32OpenSSL.html
+		Copy libeay32.dll and libssl32.dll from C:/OpenSSL-Win32 to C:/MinGW/bin folder
+
+	Linux:
+		Install gcc: sudo apt-get install gcc
+		Install openssl: sudo apt-get install openssl
+		May also need: sudo apt-get install libssl-dev
+
+Eclipse setup:
+	Windows need to install 32 bit version to ensure the 32bit jvm is used
+	Windows/Preferences/Java/Installed JRE's
+	Edit existing JRE and add -Djava.library.path=jni to default vm arguments
+	DLL (Windows) and so (Linux) files need to be in the jni folder in top level of project
+	Also need to add -Xms512M -Xmx1024M to VM arguments
+
+Modifying files:
+	Modifying/changing java code to use different jni calls - need to create new header file
+	Within the folder: vVoteVerifier\bin> use command javah com.vvote.verifierlibrary.CryptoUtils
+
+Recompiling library
+	Windows:
+		In jni folder
+		Create .o object file
+			gcc -c -I"C:\Program Files\Java\jdk1.7.0_51\include" -I"C:\Program Files\Java\jdk1.7.0_51\include\win32" -I"C:\OpenSSL-Win32\include" CryptoUtils.cpp
+
+		Create .dll shared object
+			gcc -Wl,--add-stdcall-alias -shared -o CryptoOpenSSL.dll cryptoUtils.o -lssl -lcrypto -lstdc++
+
+	Linux:
+		Create .o object file
+			gcc -c -fPIC -I/usr/lib/jvm/java-7-openjdk-amd64/include -I/usr/lib/jvm/java-7-openjdk-amd64/include/linux CryptoUtils.cpp 
+
+		Create .so shared object
+			gcc -Wl -shared -o libCryptoOpenSSL.so CryptoUtils.o -lssl -lcrypto -lstdc++
+			
+
+Running the jar
+java -Djava.library.path=jni -jar vVoteVerifier.jar res/sample_commits/

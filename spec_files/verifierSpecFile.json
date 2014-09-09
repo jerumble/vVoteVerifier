@@ -1,0 +1,21 @@
+{
+	"verifierDetails":[
+		{
+			"verifierClass":"com.vvote.verifier.component.ballotGen.BallotGenerationVerifier",
+			"verifierName":"Ballot Generation",
+			"specFile":"./spec_files/ballotGenSpec.json"
+		},
+		{
+			"verifierClass":"com.vvote.verifier.component.votePacking.VotePackingVerifier",
+			"verifierName":"Vote Packing",
+			"specFile":"./spec_files/votePackingSpec.json"
+		},
+		{
+			"verifierClass":"com.vvote.verifier.commits.CommitmentVerifier",
+			"verifierName":"Public WBB Commits",
+			"specFile":"./spec_files/commitmentSpec.json"
+		}
+	],
+	"finalCommits":"final_commits",
+	"extraCommits":"extra_commits"
+}

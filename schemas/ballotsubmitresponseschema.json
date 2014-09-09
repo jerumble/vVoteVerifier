@@ -1,0 +1,31 @@
+{
+	"type":"object",
+	"id": "#",
+	"required":["submissionID","ballotFile","peerID","fiatShamir","WBBSig"],
+	"additionalProperties":true,
+	"properties":{
+		"submissionID": {
+			"type":"string",
+			"id": "submissionID"
+		},
+		"ballotFile": {
+			"type":"string",
+			"id": "ballotFile"
+		},
+		"peerID": {
+			"type":"string",
+			"id": "peerID"
+		},
+		"fiatShamir": {
+			"type":"string",
+			"id": "fiatShamir",
+			"pattern" : "^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$"
+		},
+		"WBBSig": {
+			"type":"array",
+			"id": "WBBSig"
+		}
+	}
+}
+
+
