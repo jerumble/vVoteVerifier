@@ -71,10 +71,6 @@ public abstract class Verifier implements IVerifier {
 
 		this.dataStore = dataStore;
 		this.spec = spec;
-		
-		if(!this.dataStore.hasReadData()){
-			this.dataStore.readData();
-		}
 	}
 
 	/**

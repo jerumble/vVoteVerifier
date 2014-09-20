@@ -158,37 +158,37 @@ public abstract class DataStore {
 				this.certificatesFile = new CertificatesFile(IOUtils.readStringFromFile(IOUtils.findFile(this.getSpec().getCertsFile(), this.getBasePath())));
 
 			} catch (JSONException e) {
-				logger.error("Unable to read data.", e);
+				logger.error("Unable to read data. The format and content of the data file needs to be checked.");
 				return false;
 			} catch (CertException e) {
-				logger.error("Unable to read data.", e);
+				logger.error("Unable to read data. The format and content of the data file needs to be checked.");
 				return false;
 			} catch (FileNotFoundException e) {
-				logger.error("Unable to read data.", e);
+				logger.error("Unable to read data. The format and content of the data file needs to be checked.");
 				return false;
 			} catch (IOException e) {
-				logger.error("Unable to read data.", e);
+				logger.error("Unable to read data. The format and content of the data file needs to be checked.");
 				return false;
 			} catch (JSONIOException e) {
-				logger.error("Unable to read data.", e);
+				logger.error("Unable to read data. The format and content of the data file needs to be checked.");
 				return false;
 			} catch (CommitAttachmentInitException e) {
-				logger.error("Unable to read data.", e);
+				logger.error("Unable to read data. The format and content of the data file needs to be checked.");
 				return false;
 			} catch (CommitFileInitException e) {
-				logger.error("Unable to read data.", e);
+				logger.error("Unable to read data. The format and content of the data file needs to be checked.");
 				return false;
 			} catch (FinalCommitInitException e) {
-				logger.error("Unable to read data.", e);
+				logger.error("Unable to read data. The format and content of the data file needs to be checked.");
 				return false;
 			} catch (CommitSignatureInitException e) {
-				logger.error("Unable to read data.", e);
+				logger.error("Unable to read data. The format and content of the data file needs to be checked.");
 				return false;
 			} catch (CommitFileMessageInitException e) {
-				logger.error("Unable to read data.", e);
+				logger.error("Unable to read data. The format and content of the data file needs to be checked.");
 				return false;
 			} catch (DataStoreException e) {
-				logger.error("Unable to read data.", e);
+				logger.error("Unable to read data. The format and content of the data file needs to be checked.");
 				return false;
 			}
 

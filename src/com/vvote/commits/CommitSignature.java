@@ -67,7 +67,7 @@ public final class CommitSignature extends CommitFile {
 			try {
 				this.signatureMessage = new SignatureMessage(IOUtils.readJSONObjectFromFile(filePath));
 			} catch (JSONMessageInitException e) {
-				logger.error("Unable to create SignatureMessage: {}", this.getFilePath(), e);
+				logger.error("Unable to create SignatureMessage: {}", this.getFilePath());
 				throw new CommitSignatureInitException("Unable to create SignatureMessage: " + this.getFilePath(), e);
 			}
 		} catch (JSONIOException e) {

@@ -186,8 +186,8 @@ public class VVoteVerifier implements IVerifier {
 				this.verifiers.put(verifier.getVerifierName(), (Verifier) cons.newInstance(currentSpec, basePath, useExtraCommits));
 			}
 		} catch (InstantiationException e) {
-			logger.error("Unable to create VVoteVerifier", e);
-			throw new VVoteVerifierException("Unable to create VVoteVerifier", e);
+			logger.debug("Unable to create VVoteVerifier", e);
+			throw new VVoteVerifierException("Unable to create VVoteVerifier");
 		} catch (IllegalAccessException e) {
 			logger.error("Unable to create VVoteVerifier", e);
 			throw new VVoteVerifierException("Unable to create VVoteVerifier", e);
@@ -226,8 +226,14 @@ public class VVoteVerifier implements IVerifier {
 		for (Entry<String, Verifier> verifier : this.verifiers.entrySet()) {
 			resultsLogger.info("Doing verification on: {}", verifier.getKey());
 
-			verifier.getValue().getSpec().validateSchema();
-			verifier.getValue().getDataStore().readData();
+			if(!verifier.getValue().getSpec().validateSchema()){
+				logger.error("Unable to carry out verification - Please check the schema file");
+				return false;
+			}
+			if(!verifier.getValue().getDataStore().readData()){
+				logger.error("Unable to carry out verification - Please check the data files");
+				return false;
+			}
 
 			if (!verifier.getValue().doVerification()) {
 				verified = false;

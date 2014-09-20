@@ -127,12 +127,7 @@ public class VotePackingVerifier extends ComponentVerifier {
 
 		CryptoUtils.initProvider();
 
-		ECUtils.changeCurve(this.getDataStore().getVotePackingConfig().getCurve());
-
 		this.genericBallotSizes = new HashMap<RaceType, Integer>();
-		this.genericBallotSizes.put(RaceType.LA, this.getDataStore().getBallotGenerationConfig().getLASize());
-		this.genericBallotSizes.put(RaceType.LC_ATL, this.getDataStore().getBallotGenerationConfig().getLcATLSize());
-		this.genericBallotSizes.put(RaceType.LC_BTL, this.getDataStore().getBallotGenerationConfig().getLcBTLSize());
 
 		this.reducedBallots = new TreeMap<String, ReducedBallot>(new BallotSerialNumberComparator());
 		this.reorderedBallots = new HashMap<BallotRaceIdentifier, Map<String, SortedMap<Integer, ElGamalECPoint>>>();
@@ -231,6 +226,12 @@ public class VotePackingVerifier extends ComponentVerifier {
 		logger.debug("Starting vote packing verification");
 		resultsLogger.info("Starting vote packing verification");
 
+		ECUtils.changeCurve(this.getDataStore().getVotePackingConfig().getCurve());
+		
+		this.genericBallotSizes.put(RaceType.LA, this.getDataStore().getBallotGenerationConfig().getLASize());
+		this.genericBallotSizes.put(RaceType.LC_ATL, this.getDataStore().getBallotGenerationConfig().getLcATLSize());
+		this.genericBallotSizes.put(RaceType.LC_BTL, this.getDataStore().getBallotGenerationConfig().getLcBTLSize());
+		
 		boolean verified = super.doVerification();
 
 		try {
