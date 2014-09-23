@@ -61,6 +61,8 @@ public class VVoteVerifier implements IVerifier {
 	 * @throws VVoteVerifierException
 	 */
 	public static void main(String[] args) throws VVoteVerifierException {
+		args = new String[1];
+		args[0] = "./res/publiccommits";
 
 		System.out.println("vVoteVerifier  Copyright (C) 2014 James Rumble");
 		System.out.println("This program comes with ABSOLUTELY NO WARRANTY; for details see license.txt");
@@ -186,32 +188,32 @@ public class VVoteVerifier implements IVerifier {
 				this.verifiers.put(verifier.getVerifierName(), (Verifier) cons.newInstance(currentSpec, basePath, useExtraCommits));
 			}
 		} catch (InstantiationException e) {
-			logger.debug("Unable to create VVoteVerifier", e);
-			throw new VVoteVerifierException("Unable to create VVoteVerifier");
+			logger.error("Unable to carry out verification using the data provided: {}.", basePath, e);
+			System.exit(1);
 		} catch (IllegalAccessException e) {
-			logger.error("Unable to create VVoteVerifier", e);
-			throw new VVoteVerifierException("Unable to create VVoteVerifier", e);
+			logger.error("Unable to carry out verification using the data provided: {}.", basePath, e);
+			System.exit(1);
 		} catch (IllegalArgumentException e) {
-			logger.error("Unable to create VVoteVerifier", e);
-			throw new VVoteVerifierException("Unable to create VVoteVerifier", e);
+			logger.error("Unable to carry out verification using the data provided: {}.", basePath, e);
+			System.exit(1);
 		} catch (InvocationTargetException e) {
-			logger.error("Unable to create VVoteVerifier", e);
-			throw new VVoteVerifierException("Unable to create VVoteVerifier", e);
+			logger.error("Unable to carry out verification using the data provided: {}.", basePath, e);
+			System.exit(1);
 		} catch (ClassNotFoundException e) {
-			logger.error("Unable to create VVoteVerifier", e);
-			throw new VVoteVerifierException("Unable to create VVoteVerifier", e);
+			logger.error("Unable to carry out verification using the data provided: {}.", basePath, e);
+			System.exit(1);
 		} catch (NoSuchMethodException e) {
-			logger.error("Unable to create VVoteVerifier", e);
-			throw new VVoteVerifierException("Unable to create VVoteVerifier", e);
+			logger.error("Unable to carry out verification using the data provided: {}.", basePath, e);
+			System.exit(1);
 		} catch (SecurityException e) {
-			logger.error("Unable to create VVoteVerifier", e);
-			throw new VVoteVerifierException("Unable to create VVoteVerifier", e);
+			logger.error("Unable to carry out verification using the data provided: {}.", basePath, e);
+			System.exit(1);
 		} catch (FileNotFoundException e) {
-			logger.error("Unable to create VVoteVerifier", e);
-			throw new VVoteVerifierException("Unable to create VVoteVerifier", e);
+			logger.error("Unable to carry out verification using the data provided: {}.", basePath, e);
+			System.exit(1);
 		} catch (IOException e) {
-			logger.error("Unable to create VVoteVerifier", e);
-			throw new VVoteVerifierException("Unable to create VVoteVerifier", e);
+			logger.error("Unable to carry out verification using the data provided: {}.", basePath, e);
+			System.exit(1);
 		}
 	}
 
