@@ -17,15 +17,11 @@
  */
 package com.vvote.verifier.commits;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.vvote.commits.FinalCommitment;
 import com.vvote.messages.typed.TypedJSONMessage;
-import com.vvote.messages.types.MessageType;
 import com.vvote.verifier.DataStore;
 import com.vvote.verifier.exceptions.DataStoreException;
 
@@ -52,16 +48,6 @@ public class CommitmentDataStore extends DataStore {
 	 */
 	public CommitmentDataStore(CommitmentVerifierSpec spec, String basePath, boolean useExtraCommits) throws DataStoreException {
 		super(spec, basePath, useExtraCommits);
-	}
-
-	@Override
-	public List<MessageType> initialiseListOfRelevantMessages() {
-		return new ArrayList<MessageType>();
-	}
-
-	@Override
-	public boolean addMessage(TypedJSONMessage typedMessage, FinalCommitment commitment) {
-		return false;
 	}
 	
 	@Override

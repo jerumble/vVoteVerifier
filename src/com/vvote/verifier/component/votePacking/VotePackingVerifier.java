@@ -472,7 +472,6 @@ public class VotePackingVerifier extends ComponentVerifier {
 					// loop over each mix input ballot and try to find a match
 					for (List<ECPoint> ballot : mixOutputBallots) {
 						if (eCPointListsAreEqual(packings, ballot)) {
-							logger.info("Successfully found packing for: {}", identifier);
 							foundMatch = true;
 						}
 					}
@@ -481,7 +480,6 @@ public class VotePackingVerifier extends ComponentVerifier {
 					// unsuccessful
 					if (!foundMatch) {
 						logger.error("Unable to verify Mixnet output vote packing process: Could not find packing for: {}", identifier);
-						resultsLogger.error("Unable to verify output input vote packing process: Could not find packing for: {}", identifier);
 
 						return false;
 					}
@@ -491,7 +489,6 @@ public class VotePackingVerifier extends ComponentVerifier {
 				}
 			} else {
 				logger.error("Unable to verify Mixnet output vote packing process: {}", identifier);
-				resultsLogger.error("Unable to verify Mixnet output vote packing process: {}", identifier);
 				return false;
 			}
 		}

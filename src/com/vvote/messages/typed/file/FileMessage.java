@@ -20,6 +20,7 @@ package com.vvote.messages.typed.file;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.vvote.JSONSchema;
 import com.vvote.messages.exceptions.FileMessageInitException;
 import com.vvote.messages.exceptions.JSONMessageInitException;
 import com.vvote.messages.exceptions.TypedJSONMessageInitException;
@@ -36,7 +37,7 @@ import com.vvote.thirdparty.json.orgjson.JSONObject;
  * @author James Rumble
  * 
  */
-public abstract class FileMessage extends TypedJSONMessage {
+public class FileMessage extends TypedJSONMessage {
 
 	/**
 	 * Provides logging for the class
@@ -183,5 +184,10 @@ public abstract class FileMessage extends TypedJSONMessage {
 	    internalSignableContent.append(this.getBoothID());
 	    internalSignableContent.append(this.getCommitTime());
 	    return internalSignableContent.toString();
+	}
+
+	@Override
+	public JSONSchema getSchema() {
+		return JSONSchema.FILE_COMMIT_SCHEMA;
 	}
 }

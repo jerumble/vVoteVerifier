@@ -97,7 +97,7 @@ public class CommitmentVerifier extends Verifier {
 	public boolean doVerification() {
 
 		boolean verified = true;
-		
+
 		if (!this.getDataStore().isUseExtraCommits()) {
 			logger.info("Starting Commitment verification");
 
@@ -130,7 +130,8 @@ public class CommitmentVerifier extends Verifier {
 					for (TypedJSONMessage message : commitment.getFileMessage().getJsonMessages()) {
 						hashDigest.update(message.getInternalSignableContent().getBytes());
 
-						if (message.getType() == MessageType.BALLOT_AUDIT_COMMIT || message.getType() == MessageType.MIX_RANDOM_COMMIT || message.getType() == MessageType.BALLOT_GEN_COMMIT) {
+						if (message.getType() == MessageType.BALLOT_AUDIT_COMMIT || message.getType() == MessageType.MIX_RANDOM_COMMIT || message.getType() == MessageType.BALLOT_GEN_COMMIT
+								|| message.getType() == MessageType.FILE_COMMIT) {
 							CryptoUtils.hashFile(new File(outerExtracted, ((FileMessage) message).getFileName()), hashDigest);
 						}
 					}
@@ -155,9 +156,9 @@ public class CommitmentVerifier extends Verifier {
 					if (!BLSUtils.verifyBLSSignature(calculatedJointSig, wbbSignature, this.getDataStore().getCertificatesFile().getWbbCert())) {
 						resultsLogger.error("Verification of the joint signature for the commitment with identifier: {} failed. Check that the data was successfully downloaded.", identifier);
 						verified = false;
+					} else {
+						resultsLogger.info("Successfully verified the joint signature for the commitment with identifier: {}", identifier);
 					}
-
-					resultsLogger.info("Successfully verified the joint signature for the commitment with identifier: {}", identifier);
 				}
 			} catch (NoSuchAlgorithmException e) {
 				logger.error("Unable to continue verification.", e);
@@ -184,7 +185,7 @@ public class CommitmentVerifier extends Verifier {
 			if (verified) {
 				resultsLogger.info("Successfully verified the joint signatures for all the commitments provided");
 			}
-		}else{
+		} else {
 			resultsLogger.info("Extra commits folder is being used so we cannot verify signatures");
 		}
 

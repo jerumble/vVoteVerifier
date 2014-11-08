@@ -39,7 +39,8 @@ public class VVoteVerifierTest {
 	/**
 	 * base path for commits folder
 	 */
-	private final static String basePath = "./res/sample_commits";
+	//private final static String basePath = "./res/sample_commits";
+	private final static String basePath = "./res/all";
 
 	/**
 	 * The <code>BallotGenerationVerifier</code> used throughout the testing

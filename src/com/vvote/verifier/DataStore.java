@@ -20,6 +20,7 @@ package com.vvote.verifier;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -36,10 +37,14 @@ import com.vvote.commits.FinalCommitment;
 import com.vvote.commits.exceptions.CommitAttachmentInitException;
 import com.vvote.commits.exceptions.CommitFileInitException;
 import com.vvote.commits.exceptions.CommitFileMessageInitException;
+import com.vvote.commits.exceptions.CommitIdentifierException;
 import com.vvote.commits.exceptions.CommitSignatureInitException;
 import com.vvote.commits.exceptions.FinalCommitInitException;
+import com.vvote.datafiles.FileCommit;
+import com.vvote.datafiles.exceptions.FileCommitException;
 import com.vvote.datafiles.wbb.CertificatesFile;
 import com.vvote.messages.typed.TypedJSONMessage;
+import com.vvote.messages.typed.file.FileMessage;
 import com.vvote.messages.types.MessageType;
 import com.vvote.thirdparty.json.orgjson.JSONException;
 import com.vvote.verifier.exceptions.DataStoreException;
@@ -77,7 +82,7 @@ public abstract class DataStore {
 	 * The base path of the data provided - this data will originate from the
 	 * public web bulletin board
 	 */
-	private final String basePath;
+	private String basePath;
 
 	/**
 	 * A map of the final commitments. Identifier : FinalCommitment
@@ -103,6 +108,11 @@ public abstract class DataStore {
 	 * Whether to use final or extra commits folders
 	 */
 	private boolean useExtraCommits = false;
+
+	/**
+	 * A list of mix file commits
+	 */
+	private Map<FileMessage, FileCommit> fileCommits;
 
 	/**
 	 * Getter for whether the extra commits folder is used
@@ -139,6 +149,8 @@ public abstract class DataStore {
 		this.useExtraCommits = useExtraCommits;
 
 		this.finalCommitments = new HashMap<String, FinalCommitment>();
+
+		this.fileCommits = new HashMap<FileMessage, FileCommit>();
 	}
 
 	/**
@@ -155,18 +167,8 @@ public abstract class DataStore {
 			try {
 				this.relevantMessageTypes = this.initialiseListOfRelevantMessages();
 				this.readCommitsFolder();
-				this.certificatesFile = new CertificatesFile(IOUtils.readStringFromFile(IOUtils.findFile(this.getSpec().getCertsFile(), this.getBasePath())));
 
 			} catch (JSONException e) {
-				logger.error("Unable to read data. The format and content of the data file needs to be checked.");
-				return false;
-			} catch (CertException e) {
-				logger.error("Unable to read data. The format and content of the data file needs to be checked.");
-				return false;
-			} catch (FileNotFoundException e) {
-				logger.error("Unable to read data. The format and content of the data file needs to be checked.");
-				return false;
-			} catch (IOException e) {
 				logger.error("Unable to read data. The format and content of the data file needs to be checked.");
 				return false;
 			} catch (JSONIOException e) {
@@ -201,7 +203,63 @@ public abstract class DataStore {
 				return false;
 			}
 
+			if (!this.checkMixDataCommits()) {
+				logger.error("Unable to read data. The format and content of the data file needs to be checked.");
+				return false;
+			}
+
+			try {
+				this.certificatesFile = new CertificatesFile(IOUtils.readStringFromFile(IOUtils.findFile(this.getSpec().getCertsFile(), this.getBasePath())));
+			} catch (CertException e) {
+				logger.error("Unable to read data. The format and content of the data file needs to be checked.");
+				return false;
+			} catch (FileNotFoundException e) {
+				logger.error("Unable to read data. The format and content of the data file needs to be checked.");
+				return false;
+			} catch (IOException e) {
+				logger.error("Unable to read data. The format and content of the data file needs to be checked.");
+				return false;
+			} catch (JSONException e) {
+				logger.error("Unable to read data. The format and content of the data file needs to be checked.");
+				return false;
+			}
+
 			this.readData = true;
+		}
+
+		return true;
+	}
+
+	/**
+	 * Checks whether mix data has been submitted to the final commits folder.
+	 * If it has then this data is checked and the base path is changed
+	 * accordingly
+	 * 
+	 * @return whether the mix data commits are valid.
+	 */
+	private boolean checkMixDataCommits() {
+		if (!this.fileCommits.isEmpty()) {
+
+			int previousSize = -1;
+
+			int currentSize = -1;
+
+			for (FileMessage currentFile : this.fileCommits.keySet()) {
+
+				currentSize = currentFile.getFilesize();
+
+				if (previousSize != -1) {
+
+					if (previousSize != currentSize) {
+						logger.error("Mix Data sizes do not match");
+						return false;
+					}
+				}
+
+				previousSize = currentSize;
+			}
+
+			this.basePath = this.fileCommits.get(this.fileCommits.keySet().iterator().next()).getMixDataPath();
 		}
 
 		return true;
@@ -253,7 +311,39 @@ public abstract class DataStore {
 	 * @param commitment
 	 * @return whether the message was added successfully
 	 */
-	public abstract boolean addMessage(TypedJSONMessage typedMessage, FinalCommitment commitment);
+	public boolean addMessage(TypedJSONMessage typedMessage, FinalCommitment commitment) {
+		if (typedMessage.getType().equals(MessageType.FILE_COMMIT)) {
+			try {
+				this.addFileCommitMessage(typedMessage, commitment);
+			} catch (FileCommitException e) {
+				logger.error("Unable to add ballot gen commit message");
+				return false;
+			} catch (CommitIdentifierException e) {
+				logger.error("Unable to add ballot gen commit message");
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	/**
+	 * Adds a file commit message
+	 * 
+	 * @param typedMessage
+	 * @param commitment
+	 * @throws FileCommitException
+	 * @throws CommitIdentifierException
+	 */
+	private void addFileCommitMessage(TypedJSONMessage typedMessage, FinalCommitment commitment) throws FileCommitException, CommitIdentifierException {
+		if (typedMessage instanceof FileMessage) {
+			FileMessage message = (FileMessage) typedMessage;
+			
+			FileCommit commit = new FileCommit(message, commitment.getAttachment().getFilePath());
+
+			this.fileCommits.put(message, commit);
+		}
+	}
 
 	/**
 	 * Helper method to add a signature
@@ -325,7 +415,11 @@ public abstract class DataStore {
 	 * @return a list of message types which are relevant for the specific
 	 *         component verifier
 	 */
-	public abstract List<MessageType> initialiseListOfRelevantMessages();
+	public List<MessageType> initialiseListOfRelevantMessages() {
+		List<MessageType> relevantTypes = new ArrayList<MessageType>();
+		relevantTypes.add(MessageType.FILE_COMMIT);
+		return relevantTypes;
+	}
 
 	/**
 	 * Each component verifier will want to organise the commit data into

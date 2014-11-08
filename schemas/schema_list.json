@@ -34,5 +34,8 @@
 },
 {"id":"AUDIT_SCHEMA",
 "schemaPath":"./schemas/auditschema.json"
+},
+{"id":"FILE_COMMIT_SCHEMA",
+"schemaPath":"./schemas/filecommitschema.json"
 }
 ]

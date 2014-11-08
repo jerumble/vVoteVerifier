@@ -47,7 +47,7 @@ public class CommitmentVerifierTest {
 	/**
 	 * base path for commits folder
 	 */
-	private final static String basePath = "./res/sample_commits";
+	private final static String basePath = "./res/all";
 
 	/**
 	 * The <code>CommitmentVerifier</code> used throughout the testing

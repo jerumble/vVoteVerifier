@@ -17,10 +17,15 @@
  */
 package com.vvote.datafiles;
 
+import java.io.IOException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.vvote.datafiles.exceptions.FileCommitException;
+import com.vvote.messages.typed.file.FileMessage;
+import com.vvote.verifierlibrary.utils.io.FileType;
+import com.vvote.verifierlibrary.utils.io.IOUtils;
 
 /**
  * Abstract class for a committed file
@@ -28,7 +33,7 @@ import com.vvote.datafiles.exceptions.FileCommitException;
  * @author James Rumble
  * 
  */
-public abstract class FileCommit {
+public class FileCommit {
 
 	/**
 	 * Provides logging for the class
@@ -39,6 +44,16 @@ public abstract class FileCommit {
 	 * Attachment file location
 	 */
 	private final String attachmentFilePath;
+
+	/**
+	 * The file commit message
+	 */
+	private FileMessage message;
+
+	/**
+	 * The mix data file path - used to be the new base path
+	 */
+	private String mixDataPath;
 
 	/**
 	 * Constructor for a FileCommit
@@ -56,6 +71,35 @@ public abstract class FileCommit {
 	}
 
 	/**
+	 * Constructor for a FileCommit
+	 * 
+	 * @param message
+	 * @param attachmentFilePath
+	 * @throws FileCommitException
+	 */
+	public FileCommit(FileMessage message, String attachmentFilePath) throws FileCommitException {
+
+		if (message != null) {
+			this.message = message;
+		} else {
+			logger.error("A FileCommit object must be provided with a FileCommit Message");
+			throw new FileCommitException("A FileCommit object must be provided with a FileCommit Message");
+		}
+
+		if (attachmentFilePath != null) {
+			this.attachmentFilePath = attachmentFilePath;
+		} else {
+			logger.error("A FileCommit object must be provided with an attachment path");
+			throw new FileCommitException("A FileCommit object must be provided with an attachment path");
+		}
+
+		if (!this.readZipFile()) {
+			logger.error("There was a problem reading the zip file attachment for the current File Commit object");
+			throw new FileCommitException("There was a problem reading the zip file attachment for the current File Commit object");
+		}
+	}
+
+	/**
 	 * Getter for the attachment file path
 	 * 
 	 * @return attachmentFilePath
@@ -65,9 +109,47 @@ public abstract class FileCommit {
 	}
 
 	/**
+	 * Getter for the mix data path
+	 * 
+	 * @return the mix data path
+	 */
+	public String getMixDataPath() {
+		return this.mixDataPath;
+	}
+
+	/**
 	 * All file commits will need to read their zip file
 	 * 
 	 * @return true if the file was read successfully
 	 */
-	public abstract boolean readZipFile();
+	public boolean readZipFile() {
+		try {
+			// get filename from the message
+			String outerZip = this.getAttachmentFilePath();
+			String extractedOuterZipPath = IOUtils.extractZipFile(outerZip);
+
+			String innerZip = IOUtils.join(extractedOuterZipPath, this.message.getFileName());
+			String extractedInnerZipPath = IOUtils.extractZipFile(innerZip);
+
+			// check the extension of the filename
+			if (!IOUtils.checkExtension(FileType.ZIP, outerZip)) {
+				logger.error("There was a problem with the zip folder: {}", outerZip);
+				return false;
+			}
+
+			// check the extension of the filename
+			if (!IOUtils.checkExtension(FileType.ZIP, innerZip)) {
+				logger.error("There was a problem with the zip folder: {}", innerZip);
+				return false;
+			}
+			
+			this.mixDataPath = extractedInnerZipPath;
+			
+		} catch (IOException e) {
+			logger.error("There was a problem reading the file commit data from the commits data in the zip file", e);
+			return false;
+		}
+
+		return true;
+	}
 }

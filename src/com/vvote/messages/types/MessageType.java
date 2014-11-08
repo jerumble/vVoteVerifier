@@ -48,6 +48,11 @@ public enum MessageType {
 	BALLOT_AUDIT_COMMIT("ballotauditcommit", "com.vvote.messages.typed.file.BallotAuditCommitMessage"),
 	
 	/**
+	 * <code>BallotAuditCommitMessage</code>
+	 */
+	FILE_COMMIT("file", "com.vvote.messages.typed.file.FileMessage"),
+	
+	/**
 	 * <code>CancelMessage</code>
 	 */
 	CANCEL("cancel", "com.vvote.messages.typed.vote.CancelMessage"),

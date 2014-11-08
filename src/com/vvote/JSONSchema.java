@@ -41,6 +41,10 @@ public enum JSONSchema {
 	 */
 	BALLOT_GEN_COMMIT_SCHEMA,
 	/**
+	 * File Commit Message
+	 */
+	FILE_COMMIT_SCHEMA,
+	/**
 	 * Mix Random Commit Message
 	 */
 	MIX_RANDOM_COMMIT_SCHEMA,
