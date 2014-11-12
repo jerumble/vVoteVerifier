@@ -144,6 +144,12 @@ public class CommitmentVerifier extends Verifier {
 					jointSigDigest.update(PublicWBBConstants.FINAL_COMMIT_MESSAGE_TYPE.getBytes());
 					jointSigDigest.update(currentCommitTime.getBytes());
 					jointSigDigest.update(hash);
+					
+					String description = commitment.getSignature().getDescription();
+					
+					if(description != null){
+						jointSigDigest.update(description.getBytes());
+					}
 
 					calculatedJointSig = jointSigDigest.digest();
 
@@ -184,6 +190,8 @@ public class CommitmentVerifier extends Verifier {
 
 			if (verified) {
 				resultsLogger.info("Successfully verified the joint signatures for all the commitments provided");
+			}else{
+				resultsLogger.info("Could not successfully verify the joint signatures for the commitments provided");
 			}
 		} else {
 			resultsLogger.info("Extra commits folder is being used so we cannot verify signatures");

@@ -20,6 +20,7 @@ package com.vvote.commits;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.vvote.PublicWBBConstants;
 import com.vvote.commits.exceptions.CommitFileInitException;
 import com.vvote.verifierlibrary.utils.io.FileType;
 import com.vvote.verifierlibrary.utils.io.IOUtils;
@@ -44,6 +45,11 @@ public abstract class CommitFile {
 	private final String identifier;
 
 	/**
+	 * An optional description for the final commit
+	 */
+	private final String description;
+
+	/**
 	 * Name of the file
 	 */
 	private final String filePath;
@@ -64,7 +70,7 @@ public abstract class CommitFile {
 		logger.debug("Creating a CommitFile object: {}", filePath);
 
 		this.filePath = filePath;
-		
+
 		this.fileType = this.initFileType();
 
 		if (this.filePath != null) {
@@ -73,7 +79,15 @@ public abstract class CommitFile {
 
 				this.verifyExtension();
 
-				this.identifier = this.findIdentifier();
+				String fileNameIdentifier = this.findIdentifier();
+
+				this.identifier = fileNameIdentifier;
+
+				if (fileNameIdentifier.length() > PublicWBBConstants.COMMIT_TIME_LENGTH) {
+					this.description = fileNameIdentifier.substring(Math.min(fileNameIdentifier.length(), PublicWBBConstants.COMMIT_TIME_LENGTH), fileNameIdentifier.length());
+				} else {
+					this.description = null;
+				}
 
 				logger.debug("Identifier: {}", this.identifier);
 
@@ -104,6 +118,15 @@ public abstract class CommitFile {
 	 */
 	public String getFilePath() {
 		return this.filePath;
+	}
+
+	/**
+	 * Getter for the description of the <code>CommitFile</code> object
+	 * 
+	 * @return description
+	 */
+	public String getDescription() {
+		return this.description;
 	}
 
 	/**

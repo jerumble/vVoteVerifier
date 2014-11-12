@@ -21,6 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.vvote.JSONSchema;
+import com.vvote.PublicWBBConstants;
 import com.vvote.exceptions.JSONSchemaException;
 import com.vvote.messages.exceptions.JSONMessageInitException;
 import com.vvote.messages.fields.MessageFields;
@@ -67,7 +68,8 @@ public abstract class JSONMessage {
 			try {
 				// get and set the commit time
 				if (json.has(MessageFields.JSONMessage.COMMIT_TIME)) {
-					this.commitTime = json.getString(MessageFields.JSONMessage.COMMIT_TIME);
+					String signatureCommitTime = json.getString(MessageFields.JSONMessage.COMMIT_TIME);
+					this.commitTime = signatureCommitTime.substring(0, Math.min(signatureCommitTime.length(), PublicWBBConstants.COMMIT_TIME_LENGTH));
 				} else {
 					logger.error("The commit time for a JSONMessage must be provided");
 					throw new JSONMessageInitException("The commit time for a JSONMessage must be provided");

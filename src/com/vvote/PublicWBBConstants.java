@@ -35,4 +35,9 @@ public class PublicWBBConstants {
 	 * Commit message type.
 	 */
 	public static final String FINAL_COMMIT_MESSAGE_TYPE = "Commit";
+	
+	/**
+	 * The length of a commit time
+	 */
+	public static final int COMMIT_TIME_LENGTH = 13;
 }

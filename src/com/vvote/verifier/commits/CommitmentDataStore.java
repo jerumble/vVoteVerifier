@@ -20,8 +20,6 @@ package com.vvote.verifier.commits;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.vvote.commits.FinalCommitment;
-import com.vvote.messages.typed.TypedJSONMessage;
 import com.vvote.verifier.DataStore;
 import com.vvote.verifier.exceptions.DataStoreException;
 
