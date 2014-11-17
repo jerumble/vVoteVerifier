@@ -128,26 +128,35 @@ public class CommitmentVerifier extends Verifier {
 					outerExtracted = IOUtils.extractZipFile(commitment.getAttachment().getFilePath());
 
 					for (TypedJSONMessage message : commitment.getFileMessage().getJsonMessages()) {
+						
 						hashDigest.update(message.getInternalSignableContent().getBytes());
 
 						if (message.getType() == MessageType.BALLOT_AUDIT_COMMIT || message.getType() == MessageType.MIX_RANDOM_COMMIT || message.getType() == MessageType.BALLOT_GEN_COMMIT
 								|| message.getType() == MessageType.FILE_COMMIT) {
-							CryptoUtils.hashFile(new File(outerExtracted, ((FileMessage) message).getFileName()), hashDigest);
+							File file = new File(outerExtracted, ((FileMessage) message).getFileName());
+							logger.info("Adding hash of file to intermediate hash: {}", file.getName());
+							CryptoUtils.hashFile(file, hashDigest);
 						}
 					}
 
 					// Get the hash value
 					hash = hashDigest.digest();
+					
+					String hashString = Utils.byteToBase64String(hash);
 
 					jointSigDigest = MessageDigest.getInstance(PublicWBBConstants.PUBLIC_WBB_DIGEST);
 
+					logger.info("Adding Commit String to signature: {}", PublicWBBConstants.FINAL_COMMIT_MESSAGE_TYPE);
 					jointSigDigest.update(PublicWBBConstants.FINAL_COMMIT_MESSAGE_TYPE.getBytes());
+					logger.info("Adding Commit Time to signature: {}", currentCommitTime);
 					jointSigDigest.update(currentCommitTime.getBytes());
+					logger.info("Adding hash to signature: {}", hashString);
 					jointSigDigest.update(hash);
-					
+
 					String description = commitment.getSignature().getDescription();
-					
-					if(description != null){
+
+					if (description != null) {
+						logger.info("Adding description to signature: {}", description);
 						jointSigDigest.update(description.getBytes());
 					}
 
@@ -161,6 +170,14 @@ public class CommitmentVerifier extends Verifier {
 
 					if (!BLSUtils.verifyBLSSignature(calculatedJointSig, wbbSignature, this.getDataStore().getCertificatesFile().getWbbCert())) {
 						resultsLogger.error("Verification of the joint signature for the commitment with identifier: {} failed. Check that the data was successfully downloaded.", identifier);
+						resultsLogger.error("Expected signature: {}, but calculated signature: {}", commitment.getSignature().getSignatureMessage().getJointSig(),
+								Utils.byteToBase64String(calculatedJointSig));
+						if (description != null) {
+							resultsLogger.error("Elements used in the signature: {}, {}, {}, {}", PublicWBBConstants.FINAL_COMMIT_MESSAGE_TYPE, currentCommitTime, Utils.byteToBase64String(hash),
+									description);
+						} else {
+							resultsLogger.error("Elements used in the signature: {}, {}, {}", PublicWBBConstants.FINAL_COMMIT_MESSAGE_TYPE, currentCommitTime, Utils.byteToBase64String(hash));
+						}
 						verified = false;
 					} else {
 						resultsLogger.info("Successfully verified the joint signature for the commitment with identifier: {}", identifier);
@@ -190,7 +207,7 @@ public class CommitmentVerifier extends Verifier {
 
 			if (verified) {
 				resultsLogger.info("Successfully verified the joint signatures for all the commitments provided");
-			}else{
+			} else {
 				resultsLogger.info("Could not successfully verify the joint signatures for the commitments provided");
 			}
 		} else {

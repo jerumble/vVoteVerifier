@@ -259,6 +259,7 @@ public abstract class DataStore {
 				previousSize = currentSize;
 			}
 
+			//TODO: full data should allow for this to be used - with new data check that this can be used
 			this.basePath = this.fileCommits.get(this.fileCommits.keySet().iterator().next()).getMixDataPath();
 		}
 
