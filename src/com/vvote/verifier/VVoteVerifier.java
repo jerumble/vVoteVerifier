@@ -61,8 +61,8 @@ public class VVoteVerifier implements IVerifier {
 	 * @throws VVoteVerifierException
 	 */
 	public static void main(String[] args) throws VVoteVerifierException {
-		args = new String[1];
-		args[0] = "./res/publiccommits";
+		//args = new String[1];
+		//args[0] = "./res/publiccommits";
 
 		System.out.println("vVoteVerifier  Copyright (C) 2014 James Rumble");
 		System.out.println("This program comes with ABSOLUTELY NO WARRANTY; for details see license.txt");
