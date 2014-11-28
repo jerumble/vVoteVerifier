@@ -202,10 +202,23 @@ public abstract class DataStore {
 			if (!this.organiseCommits()) {
 				return false;
 			}
+			
+			if (!this.fileCommits.isEmpty()) {
+				String currentAttachmentPath = null;
+				String previousAttachmentPath = null;
+				for (FileCommit fileCommit : this.fileCommits.values()) {
+					currentAttachmentPath = IOUtils.getFilePathWithoutExtension(fileCommit.getAttachmentFilePath());
+					
+					if (previousAttachmentPath != null) {
+						if(!currentAttachmentPath.equals(previousAttachmentPath)){
+							logger.error("Unable to read data. The format and content of the data file needs to be checked.");
+							return false;
+						}
+					}
 
-			if (!this.checkMixDataCommits()) {
-				logger.error("Unable to read data. The format and content of the data file needs to be checked.");
-				return false;
+					previousAttachmentPath = currentAttachmentPath;
+				}
+				this.basePath = currentAttachmentPath;
 			}
 
 			try {
@@ -225,42 +238,6 @@ public abstract class DataStore {
 			}
 
 			this.readData = true;
-		}
-
-		return true;
-	}
-
-	/**
-	 * Checks whether mix data has been submitted to the final commits folder.
-	 * If it has then this data is checked and the base path is changed
-	 * accordingly
-	 * 
-	 * @return whether the mix data commits are valid.
-	 */
-	private boolean checkMixDataCommits() {
-		if (!this.fileCommits.isEmpty()) {
-
-			int previousSize = -1;
-
-			int currentSize = -1;
-
-			for (FileMessage currentFile : this.fileCommits.keySet()) {
-
-				currentSize = currentFile.getFilesize();
-
-				if (previousSize != -1) {
-
-					if (previousSize != currentSize) {
-						logger.error("Mix Data sizes do not match");
-						return false;
-					}
-				}
-
-				previousSize = currentSize;
-			}
-
-			//TODO: full data should allow for this to be used - with new data check that this can be used
-			this.basePath = this.fileCommits.get(this.fileCommits.keySet().iterator().next()).getMixDataPath();
 		}
 
 		return true;
@@ -339,7 +316,7 @@ public abstract class DataStore {
 	private void addFileCommitMessage(TypedJSONMessage typedMessage, FinalCommitment commitment) throws FileCommitException, CommitIdentifierException {
 		if (typedMessage instanceof FileMessage) {
 			FileMessage message = (FileMessage) typedMessage;
-			
+
 			FileCommit commit = new FileCommit(message, commitment.getAttachment().getFilePath());
 
 			this.fileCommits.put(message, commit);
@@ -430,14 +407,14 @@ public abstract class DataStore {
 	 */
 	private boolean organiseCommits() {
 
-		logger.debug("Organising commits data");
+		logger.info("Organising the final commit data");
 
 		logger.debug("Only need to look at messages: {}", this.getRelevantMessageTypes());
 
 		FinalCommitment commitment = null;
 
 		for (String identifier : this.getFinalCommitments().keySet()) {
-			logger.debug("Organising commits data with identifier: {}", identifier);
+			logger.info("Organising final commit data with identifier: {}", identifier);
 
 			commitment = this.getFinalCommitments().get(identifier);
 
@@ -479,7 +456,7 @@ public abstract class DataStore {
 			commitsLocation = new File(IOUtils.findFile(this.spec.getFinalCommitsFolder(), this.basePath));
 		}
 
-		logger.debug("Commits folder data: {}", commitsLocation);
+		logger.info("Initially reading Commits data folder: {}", commitsLocation);
 
 		// check whether the provided directory is valid
 		if (!commitsLocation.isDirectory()) {
@@ -529,6 +506,8 @@ public abstract class DataStore {
 			if (currentCommitment.getFileMessage() == null || currentCommitment.getAttachment() == null || currentCommitment.getSignature() == null) {
 				logger.error("Commitment doesn't contain a FileMessage, Attachment and Signature: {}", currentCommitment);
 			}
+
+			logger.info("Constructed final commit: {}", currentCommitment.getIdentifier());
 		}
 	}
 

@@ -987,10 +987,10 @@ public class BallotGenerationVerifier extends ComponentVerifier {
 				for (OpenedRandomnessCommitments currentOpenedRandomness : randomnessCommitment.getOpenedRandomnessValues()) {
 					// check the number of randomness values received
 					if (numberOfCandidatesPlus1 != currentOpenedRandomness.getNumRandomnessValues()) {
-						logger.error("The current number of opened randomness values for ballot with serial number: {} from printer: '{}' does not match the number of candidates plus 1", serialNo,
-								currentOpenedRandomness.getPeerId());
-						resultsLogger.error("The current number of opened randomness values for ballot with serial number: {} from printer: '{}' does not match the number of candidates plus 1",
-								serialNo, currentOpenedRandomness.getPeerId());
+						logger.error("The current number of opened randomness values ({}) for ballot with serial number: {} from printer: '{}' does not match the number of candidates plus 1 ({})", currentOpenedRandomness.getNumRandomnessValues(), serialNo,
+								currentOpenedRandomness.getPeerId(), numberOfCandidatesPlus1);
+						resultsLogger.error("The current number of opened randomness values ({}) for ballot with serial number: {} from printer: '{}' does not match the number of candidates plus 1 ({})", currentOpenedRandomness.getNumRandomnessValues(), serialNo,
+								currentOpenedRandomness.getPeerId(), numberOfCandidatesPlus1);
 						verified = false;
 					}
 				}
@@ -1035,10 +1035,10 @@ public class BallotGenerationVerifier extends ComponentVerifier {
 				for (OpenedRandomnessCommitments currentOpenedRandomness : randomnessCommitment.getOpenedRandomnessValues()) {
 					// check the number of randomness values received
 					if (numberOfCandidates != currentOpenedRandomness.getNumRandomnessValues()) {
-						logger.error("The current number of opened randomness values for ballot with serial number: {} from printer: '{}' does not match the number of candidates plus 1",
-								serialNumber, currentOpenedRandomness.getPeerId());
-						resultsLogger.error("The current number of opened randomness values for ballot with serial number: {} from printer: '{}' does not match the number of candidates plus 1",
-								serialNumber, currentOpenedRandomness.getPeerId());
+						logger.error("The current number of opened randomness values ({}) for ballot with serial number: {} from printer: '{}' does not match the number of candidates plus 1 ({})", currentOpenedRandomness.getNumRandomnessValues(), serialNumber,
+								currentOpenedRandomness.getPeerId(), numberOfCandidates);
+						resultsLogger.error("The current number of opened randomness values ({}) for ballot with serial number: {} from printer: '{}' does not match the number of candidates plus 1 ({})", currentOpenedRandomness.getNumRandomnessValues(), serialNumber,
+								currentOpenedRandomness.getPeerId(), numberOfCandidates);
 						return false;
 					}
 				}

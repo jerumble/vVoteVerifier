@@ -53,7 +53,7 @@ public class VotePackingVerifierTest {
 	/**
 	 * base path for commits folder
 	 */
-	private final static String basePath = "./res/sample_commits";
+	private final static String basePath = "./res/vvote_results";
 
 	/**
 	 * The <code>VotePackingVerifier</code> used throughout the testing

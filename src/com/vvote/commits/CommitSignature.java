@@ -24,6 +24,7 @@ import com.vvote.commits.exceptions.CommitFileInitException;
 import com.vvote.commits.exceptions.CommitSignatureInitException;
 import com.vvote.messages.SignatureMessage;
 import com.vvote.messages.exceptions.JSONMessageInitException;
+import com.vvote.thirdparty.json.orgjson.JSONObject;
 import com.vvote.verifierlibrary.exceptions.JSONIOException;
 import com.vvote.verifierlibrary.utils.io.FileType;
 import com.vvote.verifierlibrary.utils.io.IOUtils;
@@ -45,6 +46,11 @@ public final class CommitSignature extends CommitFile {
 	private final SignatureMessage signatureMessage;
 
 	/**
+	 * Flag for whether the signature is valid or not
+	 */
+	private final boolean isValidSignature;
+
+	/**
 	 * Constructor for a <code>CommitSignature</code> object taking as input the
 	 * filename
 	 * 
@@ -64,11 +70,19 @@ public final class CommitSignature extends CommitFile {
 
 		// read in the signature message
 		try {
-			try {
-				this.signatureMessage = new SignatureMessage(IOUtils.readJSONObjectFromFile(filePath));
-			} catch (JSONMessageInitException e) {
-				logger.error("Unable to create SignatureMessage: {}", this.getFilePath());
-				throw new CommitSignatureInitException("Unable to create SignatureMessage: " + this.getFilePath(), e);
+			JSONObject signatureJson = IOUtils.readJSONObjectFromFile(filePath);
+
+			if (signatureJson.length() > 0) {
+				try {
+					this.signatureMessage = new SignatureMessage(IOUtils.readJSONObjectFromFile(filePath));
+					this.isValidSignature = true;
+				} catch (JSONMessageInitException e) {
+					logger.error("Unable to create SignatureMessage: {}", this.getFilePath());
+					throw new CommitSignatureInitException("Unable to create SignatureMessage: " + this.getFilePath(), e);
+				}
+			} else {
+				this.signatureMessage = null;
+				this.isValidSignature = false;
 			}
 		} catch (JSONIOException e) {
 			logger.error("There was a problem reading the json file containing the commitment signature: {}", this.getFilePath(), e);
@@ -100,6 +114,15 @@ public final class CommitSignature extends CommitFile {
 	@Override
 	public FileType initFileType() {
 		return FileType.JSON;
+	}
+
+	/**
+	 * Getter for whether the signature has a valid format
+	 * 
+	 * @return isValidSignature
+	 */
+	public boolean isValidSignature() {
+		return this.isValidSignature;
 	}
 
 	@Override

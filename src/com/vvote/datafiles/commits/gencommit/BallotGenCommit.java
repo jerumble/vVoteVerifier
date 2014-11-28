@@ -192,6 +192,8 @@ public final class BallotGenCommit extends FileCommit {
 	public boolean readZipFile() {
 
 		try {
+			logger.info("Extracting zip file: {}/{}", this.getAttachmentFilePath(), this.message.getFileName());
+			
 			// get filename from the message
 			String outerZip = this.getAttachmentFilePath();
 			String extractedOuterZipPath = IOUtils.extractZipFile(outerZip);

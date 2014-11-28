@@ -25,6 +25,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -41,6 +42,7 @@ import org.slf4j.LoggerFactory;
 
 import au.com.bytecode.opencsv.CSVReader;
 
+import com.vvote.commits.CommitFileNames;
 import com.vvote.thirdparty.json.orgjson.JSONArray;
 import com.vvote.thirdparty.json.orgjson.JSONException;
 import com.vvote.thirdparty.json.orgjson.JSONObject;
@@ -176,7 +178,41 @@ public class IOUtils {
 				// make directory if not exists
 				if (!outputDirectory.exists()) {
 					outputDirectory.mkdir();
+				}/* 
+				else {
+					if (getFileNameWithoutExtension(zipFile.getName()).contains(CommitFileNames.ATTACHMENT_FILE.getFileName())) {
+						if (zipFile.size() == outputDirectory.list(filterOutZipFiles()).length) {
+							
+							ArrayList<File> innerUploads = new ArrayList<File>();
+							innerUploads.addAll(Arrays.asList(outputDirectory.listFiles(filterOutZipFiles())));
+							
+							ArrayList<File> innerZipFiles = new ArrayList<File>();
+							innerZipFiles.addAll(Arrays.asList(outputDirectory.listFiles(filterOnlyZipFiles())));
+							
+							boolean matches = true;
+							
+							ZipFile currentInnerZip = null;
+							
+							for (int i = 0; i < innerZipFiles.size(); i++){
+								
+								currentInnerZip = new ZipFile(innerZipFiles.get(i));
+								
+								if(currentInnerZip.size() != innerUploads.get(i).list().length){
+									matches = false;
+								}
+							}
+							
+							if(matches){
+								return outputDirectory.getPath();
+							}
+						}
+					} else if(getFileNameWithoutExtension(zipFile.getName()).contains(CommitFileNames.WBB_UPLOAD.getFileName())){
+						if (zipFile.size() == outputDirectory.listFiles().length) {
+							return outputDirectory.getPath();
+						}
+					}
 				}
+				*/
 
 				InputStream is = null;
 				FileOutputStream fos = null;
@@ -219,6 +255,38 @@ public class IOUtils {
 	}
 
 	/**
+	 * Returns a filename filters which checks for zip files
+	 * 
+	 * @return a filename filter simply removing all files which aren't zip
+	 *         files
+	 */
+	private static FilenameFilter filterOutZipFiles() {
+		return new FilenameFilter() {
+
+			@Override
+			public boolean accept(File dir, String name) {
+				if (name.contains(".zip")) {
+					return false;
+				}
+				return true;
+			}
+		};
+	}
+	
+	private static FilenameFilter filterOnlyZipFiles() {
+		return new FilenameFilter() {
+
+			@Override
+			public boolean accept(File dir, String name) {
+				if (name.contains(".zip")) {
+					return true;
+				}
+				return false;
+			}
+		};
+	}
+
+	/**
 	 * Gets the name of a file without the extension
 	 * 
 	 * @param filename
@@ -226,6 +294,10 @@ public class IOUtils {
 	 */
 	public static String getFileNameWithoutExtension(String filename) {
 		return FilenameUtils.removeExtension(new File(filename).getName());
+	}
+
+	public static String getFilePathWithoutExtension(String filename) {
+		return FilenameUtils.removeExtension(new File(filename).getPath());
 	}
 
 	/**

@@ -30,7 +30,11 @@ public enum CommitFileNames {
 	/**
 	 * A string contained in the filename of a signature file
 	 */
-	SIGNATURE_NAME("_signature");
+	SIGNATURE_NAME("_signature"),
+	/**
+	 * A string contained in the filename of a wbb upload zip file
+	 */
+	WBB_UPLOAD("WBBUpload");
 
 	/**
 	 * A string contained in the filename of the commit file

@@ -327,26 +327,35 @@ public final class FinalCommitment {
 	 */
 	private boolean verifySignatureFileNames() {
 
-		logger.debug("Verifying that the file names in the signature message matches the file names provided");
+		logger.debug("Verifying that the file names in the signature message matches the file names provided for commit: {}", this.getIdentifier());
 
-		// look inside the signature file and check that the file message name
-		// included matches that of the file message
-		if (this.signature != null && this.fileMessage != null) {
-			if (!this.signature.getSignatureMessage().getJsonFile().equals(new File(this.fileMessage.getFilePath()).getName())) {
-				logger.error("Signature json file doesn't match the file message name");
-				return false;
+		if (this.signature != null) {
+			if (this.signature.isValidSignature()) {
+				// look inside the signature file and check that the file
+				// message
+				// name
+				// included matches that of the file message
+				if (this.fileMessage != null) {
+					if (!this.signature.getSignatureMessage().getJsonFile().equals(new File(this.fileMessage.getFilePath()).getName())) {
+						logger.error("Signature json file doesn't match the file message name");
+						return false;
+					}
+				}
+
+				// look inside the signature file and check that the attachment
+				// file
+				// name included matches that of the attachment file
+				if (this.attachment != null) {
+					if (!this.signature.getSignatureMessage().getAttachmentFile().equals(new File(this.attachment.getFilePath()).getName())) {
+						logger.error("Signature attachment file doesn't match the attachment file name");
+						return false;
+					}
+				}
+				logger.debug("Verifyied that the file names in the signature message matches the file names provided");
+			} else {
+				logger.warn("Signature json file is empty: {}", this.getIdentifier());
 			}
 		}
-
-		// look inside the signature file and check that the attachment file
-		// name included matches that of the attachment file
-		if (this.signature != null && this.attachment != null) {
-			if (!this.signature.getSignatureMessage().getAttachmentFile().equals(new File(this.attachment.getFilePath()).getName())) {
-				logger.error("Signature attachment file doesn't match the attachment file name");
-				return false;
-			}
-		}
-		logger.debug("Verifyied that the file names in the signature message matches the file names provided");
 
 		return true;
 	}
