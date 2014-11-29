@@ -265,7 +265,7 @@ public abstract class ComponentDataStore extends DataStore {
 	 */
 	@Override
 	public List<MessageType> initialiseListOfRelevantMessages() {
-		List<MessageType> relevantTypes = new ArrayList<MessageType>();
+		List<MessageType> relevantTypes = super.initialiseListOfRelevantMessages();
 		relevantTypes.add(MessageType.BALLOT_GEN_COMMIT);
 		return relevantTypes;
 	}
@@ -341,6 +341,10 @@ public abstract class ComponentDataStore extends DataStore {
 	 */
 	@Override
 	public boolean addMessage(TypedJSONMessage typedMessage, FinalCommitment commitment) {
+		if (!super.addMessage(typedMessage, commitment)) {
+			return false;
+		}
+		
 		if (typedMessage.getType().equals(MessageType.BALLOT_GEN_COMMIT)) {
 			try {
 				this.addBallotGenCommitMessage(typedMessage, commitment);

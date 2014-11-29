@@ -248,7 +248,7 @@ public class BallotGenDataStore extends ComponentDataStore {
 
 		for (CommitIdentifier identifier : this.getAuditData().keySet()) {
 			auditCommit = this.getAuditData().get(identifier);
-			serialNumbers.addAll(auditCommit.getRandomnessCommitments().keySet());
+			serialNumbers.addAll(auditCommit.getRandomnessCommitmentSerialNumbers());
 		}
 
 		return Collections.unmodifiableSet(serialNumbers);

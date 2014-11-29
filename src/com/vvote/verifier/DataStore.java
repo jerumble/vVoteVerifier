@@ -203,6 +203,7 @@ public abstract class DataStore {
 				return false;
 			}
 			
+			/*
 			if (!this.fileCommits.isEmpty()) {
 				String currentAttachmentPath = null;
 				String previousAttachmentPath = null;
@@ -220,6 +221,7 @@ public abstract class DataStore {
 				}
 				this.basePath = currentAttachmentPath;
 			}
+			*/
 
 			try {
 				this.certificatesFile = new CertificatesFile(IOUtils.readStringFromFile(IOUtils.findFile(this.getSpec().getCertsFile(), this.getBasePath())));
@@ -496,6 +498,8 @@ public abstract class DataStore {
 
 				fileMessage = new CommitFileMessage(filePath);
 				identifier = fileMessage.getIdentifier();
+				
+				fileMessage.removeAdditionalMessages(this.relevantMessageTypes);
 
 				this.addFileMessage(identifier, fileMessage);
 			}

@@ -25,12 +25,17 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Scanner;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.vvote.datafiles.FileCommit;
+import com.vvote.datafiles.commits.gencommit.CommittedBallot;
+import com.vvote.datafiles.commits.mixrandomcommit.RandomnessServerCommits;
 import com.vvote.datafiles.exceptions.BallotAuditCommitException;
+import com.vvote.datafiles.exceptions.BallotGenCommitException;
 import com.vvote.datafiles.exceptions.FileCommitException;
 import com.vvote.messages.typed.file.BallotAuditCommitMessage;
 import com.vvote.thirdparty.json.orgjson.JSONException;
@@ -75,6 +80,16 @@ public final class BallotAuditCommit extends FileCommit {
 	 * ballot submit response data file name
 	 */
 	private final String ballotSubmitResponseFilename;
+	
+	/**
+	 * the audit data file path
+	 */
+	private String auditFilePath;
+	
+	/**
+	 * Ballot submit response file path
+	 */
+	private String ballotSubmitResponseFilePath;
 
 	/**
 	 * Holds a map of serialNo : opened commitments to the randomness values
@@ -135,14 +150,14 @@ public final class BallotAuditCommit extends FileCommit {
 	public final BallotAuditCommitMessage getMessage() {
 		return this.message;
 	}
-
+	
 	/**
-	 * Getter for the map containing randomness commitments for ballots
+	 * Getter for the set of randomness commitment serial numbers
 	 * 
-	 * @return randomnessCommitments
+	 * @return randomnessCommitments serial numbers
 	 */
-	public final Map<String, BallotGenerationRandomness> getRandomnessCommitments() {
-		return Collections.unmodifiableMap(this.randomnessCommitments);
+	public final Set<String> getRandomnessCommitmentSerialNumbers() {
+		return Collections.unmodifiableSet(this.randomnessCommitments.keySet());
 	}
 
 	/**
@@ -183,7 +198,9 @@ public final class BallotAuditCommit extends FileCommit {
 
 					// add each BallotGenerationRandomness object for easy
 					// access
-					this.randomnessCommitments.put(currentPODRandomnessCommitment.getSerialNo(), currentPODRandomnessCommitment);
+					this.randomnessCommitments.put(currentPODRandomnessCommitment.getSerialNo(), null);
+					
+					currentPODRandomnessCommitment = null;
 				}
 			} catch (FileNotFoundException e) {
 				logger.error("Unable to read the ballot generation audit data", e);
@@ -204,6 +221,70 @@ public final class BallotAuditCommit extends FileCommit {
 		}
 		return false;
 	}
+	
+	/**
+	 * Gets a specific randomness commitment and loads it if has not already been
+	 * loaded
+	 * 
+	 * @param serialNo
+	 * @return a randomness commitment
+	 */
+	public BallotGenerationRandomness getRandomnessCommit(String serialNo) {
+
+		logger.debug("Getting committed ballot cipher: {}", serialNo);
+
+		BallotGenerationRandomness randomness = null;
+
+		if (this.randomnessCommitments.containsKey(serialNo)) {
+			randomness = this.randomnessCommitments.get(serialNo);
+
+			if (randomness == null) {
+
+				logger.debug("Loading randomness commit from file: {}", serialNo);
+
+				try {
+					this.loadRandomness(serialNo);
+				} catch (JSONException | FileNotFoundException | BallotAuditCommitException e) {
+					logger.error("There was a problem reading the randomness generation data and getting the requested serial number: {}", serialNo);
+					return null;
+				}
+			}
+
+			return this.randomnessCommitments.get(serialNo);
+		}
+		return null;
+	}
+
+	/**
+	 * Loads a specific randomness commitment from file
+	 * 
+	 * @param serialNo
+	 * @throws JSONException
+	 * @throws BallotGenCommitException
+	 * @throws FileNotFoundException
+	 * @throws BallotAuditCommitException 
+	 */
+	private void loadRandomness(String serialNo) throws JSONException, FileNotFoundException, BallotAuditCommitException {
+
+		try (Scanner scanner = new Scanner(new File(this.auditFilePath))) {
+
+			String line = null;
+
+			BallotGenerationRandomness randomness = null;
+
+			while (scanner.hasNextLine()) {
+				line = scanner.nextLine();
+				if (line.contains(serialNo)) {
+					randomness = new BallotGenerationRandomness(line);
+
+					this.randomnessCommitments.put(randomness.getSerialNo(), randomness);
+					break;
+				}
+			}
+
+			scanner.close();
+		}
+	}
 
 	/**
 	 * Helper method to read the contents of the file submission data
@@ -221,8 +302,8 @@ public final class BallotAuditCommit extends FileCommit {
 			String innerZip = IOUtils.join(extractedOuterZipPath, this.message.getFileName());
 			String extractedInnerZipPath = IOUtils.extractZipFile(innerZip);
 
-			String auditFileToRead = IOUtils.join(extractedInnerZipPath, this.auditDataFilename);
-			String ballotSubmitResponseFileToRead = IOUtils.join(extractedInnerZipPath, this.ballotSubmitResponseFilename);
+			this.auditFilePath = IOUtils.join(extractedInnerZipPath, this.auditDataFilename);
+			this.ballotSubmitResponseFilePath = IOUtils.join(extractedInnerZipPath, this.ballotSubmitResponseFilename);
 
 			// check the extension of the filename
 			if (!IOUtils.checkExtension(FileType.ZIP, outerZip)) {
@@ -246,15 +327,15 @@ public final class BallotAuditCommit extends FileCommit {
 						this.message.getFilesize(), fileSize);
 			}
 
-			if (!this.loadBallotGenerationAuditFile(auditFileToRead)) {
+			if (!this.loadBallotGenerationAuditFile(this.auditFilePath)) {
 				logger.error("There was a problem reading the audit data from the unzipped directory");
 				return false;
 			}
 
-			this.response = new BallotSubmitResponse(IOUtils.readJSONObjectFromFile(ballotSubmitResponseFileToRead));
+			this.response = new BallotSubmitResponse(IOUtils.readJSONObjectFromFile(this.ballotSubmitResponseFilePath));
 
 			if (this.response == null) {
-				logger.error("There was a problem reading the ballot submit response data file from the commits data in the zip file: {}", ballotSubmitResponseFileToRead);
+				logger.error("There was a problem reading the ballot submit response data file from the commits data in the zip file: {}", this.ballotSubmitResponseFilePath);
 				return false;
 			}
 

@@ -261,9 +261,9 @@ public class BallotGenerationVerifier extends ComponentVerifier {
 			auditCommit = this.getDataStore().getAuditData().get(identifier);
 
 			// loop over the ballots to audit
-			for (String serialNumber : auditCommit.getRandomnessCommitments().keySet()) {
+			for (String serialNumber : auditCommit.getRandomnessCommitmentSerialNumbers()) {
 
-				currentBallotRandomness = auditCommit.getRandomnessCommitments().get(serialNumber);
+				currentBallotRandomness = auditCommit.getRandomnessCommit(serialNumber);
 
 				if (!this.combineRandomnessValues(currentBallotRandomness, identifier)) {
 					return false;
@@ -347,8 +347,8 @@ public class BallotGenerationVerifier extends ComponentVerifier {
 		for (CommitIdentifier identifier : this.getDataStore().getAuditData().keySet()) {
 			auditCommit = this.getDataStore().getAuditData().get(identifier);
 
-			if (auditCommit.getRandomnessCommitments().keySet().contains(serialNumber)) {
-				currentBallotRandomness = auditCommit.getRandomnessCommitments().get(serialNumber);
+			if (auditCommit.getRandomnessCommitmentSerialNumbers().contains(serialNumber)) {
+				currentBallotRandomness = auditCommit.getRandomnessCommit(serialNumber);
 
 				if (this.combineRandomnessValues(currentBallotRandomness, identifier)) {
 					return true;
@@ -394,9 +394,9 @@ public class BallotGenerationVerifier extends ComponentVerifier {
 				resultsLogger.info("Starting the verification of Public WBB commitment with identifier: {} for outer attachment file: {}, inner attachment file: {}", identifier, auditCommit.getAttachmentFilePath(), auditCommit.getMessage().getFileName());
 
 				// loop over the ballots to audit
-				for (String serialNumber : auditCommit.getRandomnessCommitments().keySet()) {
+				for (String serialNumber : auditCommit.getRandomnessCommitmentSerialNumbers()) {
 
-					currentBallotRandomness = auditCommit.getRandomnessCommitments().get(serialNumber);
+					currentBallotRandomness = auditCommit.getRandomnessCommit(serialNumber);
 
 					if (!this.verifyRandomness(currentBallotRandomness, identifier)) {
 						verified = false;
@@ -463,7 +463,7 @@ public class BallotGenerationVerifier extends ComponentVerifier {
 			for (CommitIdentifier identifier : this.getDataStore().getAuditData().keySet()) {
 				auditCommit = this.getDataStore().getAuditData().get(identifier);
 
-				if (auditCommit.getRandomnessCommitments().keySet().contains(serialNumber)) {
+				if (auditCommit.getRandomnessCommitmentSerialNumbers().contains(serialNumber)) {
 
 					if (!this.verifyRandomness(serialNumber)) {
 						verified = false;
@@ -584,9 +584,9 @@ public class BallotGenerationVerifier extends ComponentVerifier {
 			auditCommit = this.getDataStore().getAuditData().get(identifier);
 
 			// loop over the ballots to audit
-			for (String serialNumber : auditCommit.getRandomnessCommitments().keySet()) {
+			for (String serialNumber : auditCommit.getRandomnessCommitmentSerialNumbers()) {
 
-				currentBallotRandomness = auditCommit.getRandomnessCommitments().get(serialNumber);
+				currentBallotRandomness = auditCommit.getRandomnessCommit(serialNumber);
 
 				if (!this.verifyEncryptions(currentBallotRandomness, identifier)) {
 					return false;
@@ -741,8 +741,8 @@ public class BallotGenerationVerifier extends ComponentVerifier {
 		for (CommitIdentifier identifier : this.getDataStore().getAuditData().keySet()) {
 			auditCommit = this.getDataStore().getAuditData().get(identifier);
 
-			if (auditCommit.getRandomnessCommitments().keySet().contains(serialNumber)) {
-				currentBallotRandomness = auditCommit.getRandomnessCommitments().get(serialNumber);
+			if (auditCommit.getRandomnessCommitmentSerialNumbers().contains(serialNumber)) {
+				currentBallotRandomness = auditCommit.getRandomnessCommit(serialNumber);
 
 				if (this.verifyEncryptions(currentBallotRandomness, identifier)) {
 					return true;
@@ -838,14 +838,14 @@ public class BallotGenerationVerifier extends ComponentVerifier {
 				verified = false;
 			}
 
-			if (auditCommit.getRandomnessCommitments().keySet().size() != ballotsToAudit) {
+			if (auditCommit.getRandomnessCommitmentSerialNumbers().size() != ballotsToAudit) {
 				logger.error("The number of serial numbers included in the audit file doesn't match the number of serial numbers requested for auditing for commitment with identifier: {}", identifier);
 				resultsLogger.error("The number of serial numbers included in the audit file doesn't match the number of serial numbers requested for auditing for commitment with identifier: {}",
 						identifier);
 				verified = false;
 			}
 
-			if (!auditCommit.getRandomnessCommitments().keySet().containsAll(serialNumbersToAudit)) {
+			if (!auditCommit.getRandomnessCommitmentSerialNumbers().containsAll(serialNumbersToAudit)) {
 				logger.error(
 						"The serial numbers included in the audit file do not match the serial numbers requested for auditing calculated using the fiat shamir signature for commitment with identifier: {}",
 						identifier);
@@ -883,11 +883,11 @@ public class BallotGenerationVerifier extends ComponentVerifier {
 		for (CommitIdentifier identifier : this.getDataStore().getAuditData().keySet()) {
 			auditCommit = this.getDataStore().getAuditData().get(identifier);
 
-			if (ballotsToAudit != auditCommit.getRandomnessCommitments().size()) {
+			if (ballotsToAudit != auditCommit.getRandomnessCommitmentSerialNumbers().size()) {
 				logger.error("The number of ballots required for auditing ({}) does not match the number of audit ballots found ({}) for printer: ({})", ballotsToAudit, auditCommit
-						.getRandomnessCommitments().size(), identifier.getPrinterId());
+						.getRandomnessCommitmentSerialNumbers().size(), identifier.getPrinterId());
 				resultsLogger.error("The number of ballots required for auditing ({}) does not match the number of audit ballots found ({}) for printer: ({})", ballotsToAudit, auditCommit
-						.getRandomnessCommitments().size(), identifier.getPrinterId());
+						.getRandomnessCommitmentSerialNumbers().size(), identifier.getPrinterId());
 
 				return false;
 			}
@@ -981,8 +981,8 @@ public class BallotGenerationVerifier extends ComponentVerifier {
 		for (CommitIdentifier identifier : this.getDataStore().getAuditData().keySet()) {
 			auditCommit = this.getDataStore().getAuditData().get(identifier);
 
-			for (String serialNo : auditCommit.getRandomnessCommitments().keySet()) {
-				randomnessCommitment = auditCommit.getRandomnessCommitments().get(serialNo);
+			for (String serialNo : auditCommit.getRandomnessCommitmentSerialNumbers()) {
+				randomnessCommitment = auditCommit.getRandomnessCommit(serialNo);
 
 				for (OpenedRandomnessCommitments currentOpenedRandomness : randomnessCommitment.getOpenedRandomnessValues()) {
 					// check the number of randomness values received
@@ -1029,8 +1029,8 @@ public class BallotGenerationVerifier extends ComponentVerifier {
 		for (CommitIdentifier identifier : this.getDataStore().getAuditData().keySet()) {
 			auditCommit = this.getDataStore().getAuditData().get(identifier);
 
-			if (auditCommit.getRandomnessCommitments().keySet().contains(serialNumber)) {
-				randomnessCommitment = auditCommit.getRandomnessCommitments().get(serialNumber);
+			if (auditCommit.getRandomnessCommitmentSerialNumbers().contains(serialNumber)) {
+				randomnessCommitment = auditCommit.getRandomnessCommit(serialNumber);
 
 				for (OpenedRandomnessCommitments currentOpenedRandomness : randomnessCommitment.getOpenedRandomnessValues()) {
 					// check the number of randomness values received
@@ -1079,9 +1079,9 @@ public class BallotGenerationVerifier extends ComponentVerifier {
 			auditCommit = this.getDataStore().getAuditData().get(identifier);
 
 			// loop over the ballots to audit
-			for (String serialNumber : auditCommit.getRandomnessCommitments().keySet()) {
+			for (String serialNumber : auditCommit.getRandomnessCommitmentSerialNumbers()) {
 
-				currentBallotRandomness = auditCommit.getRandomnessCommitments().get(serialNumber);
+				currentBallotRandomness = auditCommit.getRandomnessCommit(serialNumber);
 
 				if (!this.verifyRandomness(currentBallotRandomness, identifier)) {
 					return false;
@@ -1259,8 +1259,8 @@ public class BallotGenerationVerifier extends ComponentVerifier {
 		for (CommitIdentifier identifier : this.getDataStore().getAuditData().keySet()) {
 			auditCommit = this.getDataStore().getAuditData().get(identifier);
 
-			if (auditCommit.getRandomnessCommitments().keySet().contains(serialNumber)) {
-				currentBallotRandomness = auditCommit.getRandomnessCommitments().get(serialNumber);
+			if (auditCommit.getRandomnessCommitmentSerialNumbers().contains(serialNumber)) {
+				currentBallotRandomness = auditCommit.getRandomnessCommit(serialNumber);
 
 				if (!this.verifyRandomness(currentBallotRandomness, identifier)) {
 					return false;
@@ -1374,7 +1374,7 @@ public class BallotGenerationVerifier extends ComponentVerifier {
 		for (CommitIdentifier identifier : this.getDataStore().getAuditData().keySet()) {
 			auditCommit = this.getDataStore().getAuditData().get(identifier);
 
-			if (auditCommit.getRandomnessCommitments().keySet().contains(serialNumber)) {
+			if (auditCommit.getRandomnessCommitmentSerialNumbers().contains(serialNumber)) {
 				logger.info("Ballot with serial number: {} is a valid ballot which was chosen for auditing", serialNumber);
 				return true;
 			}

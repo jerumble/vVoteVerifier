@@ -29,6 +29,7 @@ import com.vvote.commits.exceptions.CommitFileMessageInitException;
 import com.vvote.messages.exceptions.TypedJSONMessageInitException;
 import com.vvote.messages.exceptions.UnknownMessageException;
 import com.vvote.messages.typed.TypedJSONMessage;
+import com.vvote.messages.types.MessageType;
 import com.vvote.thirdparty.json.orgjson.JSONException;
 import com.vvote.thirdparty.json.orgjson.JSONObject;
 import com.vvote.verifierlibrary.exceptions.JSONIOException;
@@ -126,8 +127,8 @@ public final class CommitFileMessage extends CommitFile {
 	 * @param jsonObjects
 	 * 
 	 * @throws JSONException
-	 * @throws TypedJSONMessageInitException 
-	 * @throws UnknownMessageException 
+	 * @throws TypedJSONMessageInitException
+	 * @throws UnknownMessageException
 	 */
 	private final void loadMessages(List<JSONObject> jsonObjects) throws JSONException, UnknownMessageException, TypedJSONMessageInitException {
 
@@ -147,5 +148,18 @@ public final class CommitFileMessage extends CommitFile {
 	@Override
 	public String toString() {
 		return "CommitFileMessage [jsonMessages=" + this.jsonMessages + ", getFilePath()=" + getFilePath() + ", getIdentifier()=" + getIdentifier() + "]";
+	}
+
+	public void removeAdditionalMessages(List<MessageType> relevantMessageTypes) {
+
+		List<TypedJSONMessage> toRemove = new ArrayList<TypedJSONMessage>();
+
+		for (TypedJSONMessage message : this.jsonMessages) {
+			if (!relevantMessageTypes.contains(message.getType())) {
+				toRemove.add(message);
+			}
+		}
+		
+		this.jsonMessages.removeAll(toRemove);
 	}
 }

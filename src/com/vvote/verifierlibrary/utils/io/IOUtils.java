@@ -36,6 +36,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -178,41 +179,7 @@ public class IOUtils {
 				// make directory if not exists
 				if (!outputDirectory.exists()) {
 					outputDirectory.mkdir();
-				}/* 
-				else {
-					if (getFileNameWithoutExtension(zipFile.getName()).contains(CommitFileNames.ATTACHMENT_FILE.getFileName())) {
-						if (zipFile.size() == outputDirectory.list(filterOutZipFiles()).length) {
-							
-							ArrayList<File> innerUploads = new ArrayList<File>();
-							innerUploads.addAll(Arrays.asList(outputDirectory.listFiles(filterOutZipFiles())));
-							
-							ArrayList<File> innerZipFiles = new ArrayList<File>();
-							innerZipFiles.addAll(Arrays.asList(outputDirectory.listFiles(filterOnlyZipFiles())));
-							
-							boolean matches = true;
-							
-							ZipFile currentInnerZip = null;
-							
-							for (int i = 0; i < innerZipFiles.size(); i++){
-								
-								currentInnerZip = new ZipFile(innerZipFiles.get(i));
-								
-								if(currentInnerZip.size() != innerUploads.get(i).list().length){
-									matches = false;
-								}
-							}
-							
-							if(matches){
-								return outputDirectory.getPath();
-							}
-						}
-					} else if(getFileNameWithoutExtension(zipFile.getName()).contains(CommitFileNames.WBB_UPLOAD.getFileName())){
-						if (zipFile.size() == outputDirectory.listFiles().length) {
-							return outputDirectory.getPath();
-						}
-					}
 				}
-				*/
 
 				InputStream is = null;
 				FileOutputStream fos = null;
@@ -228,6 +195,26 @@ public class IOUtils {
 
 					// current output file
 					File file = new File(IOUtils.join(outputDirectory.getPath(), entryName));
+
+					File currentOutputFile = new File(getFilePathWithoutExtension(file.getPath()));
+
+					if (currentOutputFile.exists()) {
+						if (getFileNameWithoutExtension(entryName).contains(CommitFileNames.WBB_UPLOAD.getFileName())) {
+
+							ZipFile currentZipFile = new ZipFile(file);
+
+							Enumeration<? extends ZipEntry> currentZipEntries = currentZipFile.entries();
+
+							long currentUncompressedZipSize = currentZipEntries.nextElement().getSize();
+							long currentDirectorySize = FileUtils.sizeOfDirectory(currentOutputFile);
+
+							currentZipFile.close();
+
+							if (currentUncompressedZipSize == currentDirectorySize) {
+								continue;
+							}
+						}
+					}
 
 					// if directory make it
 					if (entryName.endsWith("/")) {
@@ -272,7 +259,7 @@ public class IOUtils {
 			}
 		};
 	}
-	
+
 	private static FilenameFilter filterOnlyZipFiles() {
 		return new FilenameFilter() {
 
