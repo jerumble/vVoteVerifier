@@ -150,6 +150,12 @@ public final class CommitFileMessage extends CommitFile {
 		return "CommitFileMessage [jsonMessages=" + this.jsonMessages + ", getFilePath()=" + getFilePath() + ", getIdentifier()=" + getIdentifier() + "]";
 	}
 
+	/**
+	 * Removes any additional messages not needed for a particular verification
+	 * component
+	 * 
+	 * @param relevantMessageTypes
+	 */
 	public void removeAdditionalMessages(List<MessageType> relevantMessageTypes) {
 
 		List<TypedJSONMessage> toRemove = new ArrayList<TypedJSONMessage>();
@@ -159,7 +165,7 @@ public final class CommitFileMessage extends CommitFile {
 				toRemove.add(message);
 			}
 		}
-		
+
 		this.jsonMessages.removeAll(toRemove);
 	}
 }

@@ -32,6 +32,14 @@ import com.vvote.thirdparty.json.orgjson.JSONObject;
  */
 public final class BallotGenCommitMessage extends FileMessage {
 
+	@Override
+	public String toString() {
+		return "BallotGenCommitMessage [getSchema()=" + getSchema() + ", get_digest()=" + get_digest() + ", getDigest()=" + getDigest() + ", getFileName()=" + getFileName() + ", getFilesize()="
+				+ getFilesize() + ", getSubmissionId()=" + getSubmissionId() + ", getInternalSignableContent()=" + getInternalSignableContent() + ", getBoothID()=" + getBoothID() + ", getBoothSig()="
+				+ getBoothSig() + ", getType()=" + getType() + ", getCommitTime()=" + getCommitTime() + ", getClass()=" + getClass() + ", hashCode()=" + hashCode() + ", toString()="
+				+ super.toString() + "]";
+	}
+
 	/**
 	 * Constructor for a <code>BallotGenCommitMessage</code> object
 	 * 

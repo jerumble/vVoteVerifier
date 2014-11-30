@@ -25,7 +25,6 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -201,17 +200,15 @@ public class IOUtils {
 					if (currentOutputFile.exists()) {
 						if (getFileNameWithoutExtension(entryName).contains(CommitFileNames.WBB_UPLOAD.getFileName())) {
 
-							ZipFile currentZipFile = new ZipFile(file);
+							try (ZipFile currentZipFile = new ZipFile(file)) {
+								Enumeration<? extends ZipEntry> currentZipEntries = currentZipFile.entries();
 
-							Enumeration<? extends ZipEntry> currentZipEntries = currentZipFile.entries();
+								long currentUncompressedZipSize = currentZipEntries.nextElement().getSize();
+								long currentDirectorySize = FileUtils.sizeOfDirectory(currentOutputFile);
 
-							long currentUncompressedZipSize = currentZipEntries.nextElement().getSize();
-							long currentDirectorySize = FileUtils.sizeOfDirectory(currentOutputFile);
-
-							currentZipFile.close();
-
-							if (currentUncompressedZipSize == currentDirectorySize) {
-								continue;
+								if (currentUncompressedZipSize == currentDirectorySize) {
+									continue;
+								}
 							}
 						}
 					}
@@ -242,38 +239,6 @@ public class IOUtils {
 	}
 
 	/**
-	 * Returns a filename filters which checks for zip files
-	 * 
-	 * @return a filename filter simply removing all files which aren't zip
-	 *         files
-	 */
-	private static FilenameFilter filterOutZipFiles() {
-		return new FilenameFilter() {
-
-			@Override
-			public boolean accept(File dir, String name) {
-				if (name.contains(".zip")) {
-					return false;
-				}
-				return true;
-			}
-		};
-	}
-
-	private static FilenameFilter filterOnlyZipFiles() {
-		return new FilenameFilter() {
-
-			@Override
-			public boolean accept(File dir, String name) {
-				if (name.contains(".zip")) {
-					return true;
-				}
-				return false;
-			}
-		};
-	}
-
-	/**
 	 * Gets the name of a file without the extension
 	 * 
 	 * @param filename
@@ -283,6 +248,12 @@ public class IOUtils {
 		return FilenameUtils.removeExtension(new File(filename).getName());
 	}
 
+	/**
+	 * Gets a file path not including the extension of the file
+	 * 
+	 * @param filename
+	 * @return file path without the extension of the file
+	 */
 	public static String getFilePathWithoutExtension(String filename) {
 		return FilenameUtils.removeExtension(new File(filename).getPath());
 	}

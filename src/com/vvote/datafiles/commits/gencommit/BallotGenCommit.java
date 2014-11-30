@@ -52,7 +52,7 @@ public final class BallotGenCommit extends FileCommit {
 	 * Provides logging for the class
 	 */
 	private static final Logger logger = LoggerFactory.getLogger(BallotGenCommit.class);
-	
+
 	/**
 	 * Provides logging for the actual results produced in the verifier
 	 */
@@ -193,7 +193,7 @@ public final class BallotGenCommit extends FileCommit {
 
 		try {
 			logger.info("Extracting zip file: {}/{}", this.getAttachmentFilePath(), this.message.getFileName());
-			
+
 			// get filename from the message
 			String outerZip = this.getAttachmentFilePath();
 			String extractedOuterZipPath = IOUtils.extractZipFile(outerZip);
@@ -219,8 +219,10 @@ public final class BallotGenCommit extends FileCommit {
 			long fileSize = new File(innerZip).length();
 
 			if (this.message.getFilesize() != fileSize) {
-				logger.error("The zip folder's size did not match the size included in the ballot gen commit message: {}, expected size: {}, actual size: {}", this.ciphersDataFilePath, this.message.getFilesize(), fileSize);
-				resultsLogger.error("The zip folder's size did not match the size included in the ballot gen commit message: {}, expected size: {}, actual size: {}", this.ciphersDataFilePath, this.message.getFilesize(), fileSize);
+				logger.error("The zip folder's size did not match the size included in the ballot gen commit message: {}, expected size: {}, actual size: {}", this.ciphersDataFilePath,
+						this.message.getFilesize(), fileSize);
+				resultsLogger.error("The zip folder's size did not match the size included in the ballot gen commit message: {}, expected size: {}, actual size: {}", this.ciphersDataFilePath,
+						this.message.getFilesize(), fileSize);
 			}
 
 			if (!this.loadCommittedCiphers(this.ciphersDataFilePath)) {
@@ -303,6 +305,17 @@ public final class BallotGenCommit extends FileCommit {
 			}
 
 			scanner.close();
+		}
+	}
+
+	/**
+	 * Release the committed ballot
+	 * 
+	 * @param serialNumber
+	 */
+	public void freeCommittedBallot(String serialNumber) {
+		if (this.committedBallots.containsKey(serialNumber)) {
+			this.committedBallots.put(serialNumber, null);
 		}
 	}
 }

@@ -32,8 +32,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.vvote.datafiles.FileCommit;
-import com.vvote.datafiles.commits.gencommit.CommittedBallot;
-import com.vvote.datafiles.commits.mixrandomcommit.RandomnessServerCommits;
 import com.vvote.datafiles.exceptions.BallotAuditCommitException;
 import com.vvote.datafiles.exceptions.BallotGenCommitException;
 import com.vvote.datafiles.exceptions.FileCommitException;
@@ -357,5 +355,15 @@ public final class BallotAuditCommit extends FileCommit {
 	public String toString() {
 		return "BallotAuditCommit [message=" + this.message + ", response=" + this.response + ", auditDataFilename=" + this.auditDataFilename + ", ballotSubmitResponseFilename="
 				+ this.ballotSubmitResponseFilename + ", randomnessCommitments=" + this.randomnessCommitments + "]";
+	}
+
+	/**
+	 * Releases the BallotGenerationRandomness value with the provided serial number
+	 * @param serialNo
+	 */
+	public void freeRandomnessCommit(String serialNo) {
+		if (this.randomnessCommitments.containsKey(serialNo)) {
+			this.randomnessCommitments.put(serialNo, null);
+		}
 	}
 }

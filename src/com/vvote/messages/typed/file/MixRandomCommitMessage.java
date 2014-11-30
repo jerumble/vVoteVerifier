@@ -95,4 +95,12 @@ public final class MixRandomCommitMessage extends FileMessage {
 	    internalSignableContent.append(this.getCommitTime());
 	    return internalSignableContent.toString();
 	}
+
+	@Override
+	public String toString() {
+		return "MixRandomCommitMessage [printerID=" + this.printerID + ", getPrinterID()=" + getPrinterID() + ", getSchema()=" + getSchema() + ", getInternalSignableContent()="
+				+ getInternalSignableContent() + ", get_digest()=" + get_digest() + ", getDigest()=" + getDigest() + ", getFileName()=" + getFileName() + ", getFilesize()=" + getFilesize()
+				+ ", getSubmissionId()=" + getSubmissionId() + ", getBoothID()=" + getBoothID() + ", getBoothSig()=" + getBoothSig() + ", getType()=" + getType() + ", getCommitTime()="
+				+ getCommitTime() + ", getClass()=" + getClass() + ", hashCode()=" + hashCode() + ", toString()=" + super.toString() + "]";
+	}
 }

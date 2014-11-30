@@ -227,11 +227,11 @@ public class VotePackingVerifier extends ComponentVerifier {
 		resultsLogger.info("Starting vote packing verification");
 
 		ECUtils.changeCurve(this.getDataStore().getVotePackingConfig().getCurve());
-		
+
 		this.genericBallotSizes.put(RaceType.LA, this.getDataStore().getBallotGenerationConfig().getLASize());
 		this.genericBallotSizes.put(RaceType.LC_ATL, this.getDataStore().getBallotGenerationConfig().getLcATLSize());
 		this.genericBallotSizes.put(RaceType.LC_BTL, this.getDataStore().getBallotGenerationConfig().getLcBTLSize());
-		
+
 		boolean verified = super.doVerification();
 
 		try {
@@ -1347,7 +1347,7 @@ public class VotePackingVerifier extends ComponentVerifier {
 		if (isValid) {
 			logger.debug("Verified each reduced ballot is the right length for its district and race");
 			resultsLogger.info("Verified each reduced ballot is the right length for its district and race");
-		} else{
+		} else {
 			logger.debug("Could not successfully verify each of the reduced ballots");
 			resultsLogger.info("Could not successfully verify each of the reduced ballots");
 		}
@@ -1404,8 +1404,10 @@ public class VotePackingVerifier extends ComponentVerifier {
 
 				// create a new reduced ballot
 				currentReducedBallot = new ReducedBallot(currentCommittedBallot, currentVote.getPodMessage(), baseEncryptedIds, publicKey, this.genericBallotSizes, districtConfig);
-				
+
 				this.reducedBallots.put(serialNumber, currentReducedBallot);
+
+				this.freeCommittedBallot(serialNumber);
 			}
 		} catch (VotePackingException e) {
 			logger.error("Unable to reduce ballots", e);
@@ -1442,5 +1444,27 @@ public class VotePackingVerifier extends ComponentVerifier {
 		}
 
 		return null;
+	}
+
+	/**
+	 * Release the committed ballot
+	 * 
+	 * @param serialNumber
+	 */
+	private void freeCommittedBallot(String serialNumber) {
+
+		BallotGenCommit commit = null;
+
+		// loops over all commitment identifiers
+		for (CommitIdentifier identifier : this.getDataStore().getGeneratedCiphers().keySet()) {
+
+			// get the commitment
+			commit = this.getDataStore().getGeneratedCiphers().get(identifier);
+
+			// checks whether the serial number appears in the committed ballots
+			if (commit.getCommittedBallotsSerialNumbers().contains(serialNumber)) {
+				commit.freeCommittedBallot(serialNumber);
+			}
+		}
 	}
 }

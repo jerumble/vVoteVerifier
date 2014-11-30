@@ -48,4 +48,12 @@ public final class BallotAuditCommitMessage extends FileMessage {
 	public JSONSchema getSchema() {
 		return JSONSchema.BALLOT_AUDIT_COMMIT_SCHEMA;
 	}
+
+	@Override
+	public String toString() {
+		return "BallotAuditCommitMessage [getSchema()=" + getSchema() + ", get_digest()=" + get_digest() + ", getDigest()=" + getDigest() + ", getFileName()=" + getFileName() + ", getFilesize()="
+				+ getFilesize() + ", getSubmissionId()=" + getSubmissionId() + ", getInternalSignableContent()=" + getInternalSignableContent() + ", getBoothID()=" + getBoothID() + ", getBoothSig()="
+				+ getBoothSig() + ", getType()=" + getType() + ", getCommitTime()=" + getCommitTime() + ", getClass()=" + getClass() + ", hashCode()=" + hashCode() + ", toString()="
+				+ super.toString() + "]";
+	}
 }

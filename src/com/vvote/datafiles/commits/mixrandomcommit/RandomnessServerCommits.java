@@ -223,4 +223,14 @@ public final class RandomnessServerCommits {
 	public String toString() {
 		return "RandomnessServerCommits [serverName=" + this.serverName + ", filePath=" + this.filePath + ", randomnessCommits=" + this.randomnessCommits + "]";
 	}
+
+	/**
+	 * Releases the mix randomness commit with the provided serial number
+	 * @param serialNumber
+	 */
+	public void freeMixRandomCommit(String serialNumber) {
+		if (this.randomnessCommits.containsKey(serialNumber)) {
+			this.randomnessCommits.put(serialNumber, null);
+		}
+	}
 }

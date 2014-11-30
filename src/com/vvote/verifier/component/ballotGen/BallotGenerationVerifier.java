@@ -49,6 +49,7 @@ import com.vvote.datafiles.commits.gencommit.CommittedBallot;
 import com.vvote.datafiles.commits.mixrandomcommit.MixCommitData;
 import com.vvote.datafiles.commits.mixrandomcommit.MixRandomCommit;
 import com.vvote.datafiles.commits.mixrandomcommit.RandomnessServerCommits;
+import com.vvote.datafiles.wbb.CertificatesFile;
 import com.vvote.ec.ElGamalECPoint;
 import com.vvote.ec.ElGamalECPointComparator;
 import com.vvote.ec.IndexedElGamalECPoint;
@@ -268,6 +269,8 @@ public class BallotGenerationVerifier extends ComponentVerifier {
 				if (!this.combineRandomnessValues(currentBallotRandomness, identifier)) {
 					return false;
 				}
+				
+				auditCommit.freeRandomnessCommit(serialNumber);
 			}
 		}
 
@@ -353,6 +356,8 @@ public class BallotGenerationVerifier extends ComponentVerifier {
 				if (this.combineRandomnessValues(currentBallotRandomness, identifier)) {
 					return true;
 				}
+				
+				auditCommit.freeRandomnessCommit(serialNumber);
 			}
 		}
 
@@ -409,6 +414,8 @@ public class BallotGenerationVerifier extends ComponentVerifier {
 					if (!this.verifyEncryptions(currentBallotRandomness, identifier)) {
 						verified = false;
 					}
+					
+					auditCommit.freeRandomnessCommit(serialNumber);
 				}
 			}
 		} catch (CommitException e) {
@@ -591,6 +598,8 @@ public class BallotGenerationVerifier extends ComponentVerifier {
 				if (!this.verifyEncryptions(currentBallotRandomness, identifier)) {
 					return false;
 				}
+				
+				auditCommit.freeRandomnessCommit(serialNumber);
 			}
 		}
 
@@ -709,6 +718,8 @@ public class BallotGenerationVerifier extends ComponentVerifier {
 
 			return false;
 		}
+		
+		this.getDataStore().getGeneratedCiphers().get(identifier).freeCommittedBallot(serialNo);
 
 		logger.debug("Re-encryption and sorting was successful for ballot with serial number: '{}'. The generic ballot was generated successfully by PoD Printer: {}", serialNo,
 				identifier.getPrinterId());
@@ -747,6 +758,8 @@ public class BallotGenerationVerifier extends ComponentVerifier {
 				if (this.verifyEncryptions(currentBallotRandomness, identifier)) {
 					return true;
 				}
+				
+				auditCommit.freeRandomnessCommit(serialNumber);
 			}
 		}
 
@@ -948,6 +961,8 @@ public class BallotGenerationVerifier extends ComponentVerifier {
 									mixCommit.getSerialNo());
 							return false;
 						}
+						
+						currentCommit.getServerCommits().freeMixRandomCommit(serialNumber);
 					}
 				}
 			}
@@ -994,6 +1009,8 @@ public class BallotGenerationVerifier extends ComponentVerifier {
 						verified = false;
 					}
 				}
+				
+				auditCommit.freeRandomnessCommit(serialNo);
 			}
 		}
 
@@ -1042,6 +1059,8 @@ public class BallotGenerationVerifier extends ComponentVerifier {
 						return false;
 					}
 				}
+				
+				auditCommit.freeRandomnessCommit(serialNumber);
 			}
 		}
 
@@ -1086,6 +1105,8 @@ public class BallotGenerationVerifier extends ComponentVerifier {
 				if (!this.verifyRandomness(currentBallotRandomness, identifier)) {
 					return false;
 				}
+				
+				auditCommit.freeRandomnessCommit(serialNumber);
 			}
 		}
 
@@ -1217,6 +1238,9 @@ public class BallotGenerationVerifier extends ComponentVerifier {
 								return false;
 							}
 						}
+						
+						currentServerRandomnessCommits.freeMixRandomCommit(serialNo);
+						
 						randomnessVerified = true;
 					}
 				}
@@ -1265,6 +1289,8 @@ public class BallotGenerationVerifier extends ComponentVerifier {
 				if (!this.verifyRandomness(currentBallotRandomness, identifier)) {
 					return false;
 				}
+				
+				auditCommit.freeRandomnessCommit(serialNumber);
 			}
 		}
 
@@ -1306,7 +1332,7 @@ public class BallotGenerationVerifier extends ComponentVerifier {
 		CryptoUtils.hashFile(new File(ciphersFilePath), fiatShamirDigest);
 
 		// add combined sig
-		String combinedSig = this.getCombinedSignature(auditCommit);
+		String combinedSig = this.getCombinedSignature(this.getDataStore().getCertificatesFile(), auditCommit);
 		fiatShamirDigest.update(Utils.decodeBase64Data(combinedSig));
 
 		final byte[] fiatShamirSig = fiatShamirDigest.digest();
@@ -1326,13 +1352,18 @@ public class BallotGenerationVerifier extends ComponentVerifier {
 
 	/**
 	 * Gets the combined signature for the audit commitment
+	 * @param certificatesFile 
 	 * 
 	 * @param auditCommit
 	 * @return combined signature
 	 */
-	private String getCombinedSignature(BallotAuditCommit auditCommit) {
+	private String getCombinedSignature(CertificatesFile certificatesFile, BallotAuditCommit auditCommit) {
+		int numberOfPeers = 7;
+		int threshold = 5;
+		
 		try {
-			BLSCombiner bls = new BLSCombiner(5, 4);
+			
+			BLSCombiner bls = new BLSCombiner(numberOfPeers, threshold);
 
 			int peerIndex = 0;
 
@@ -1349,10 +1380,10 @@ public class BallotGenerationVerifier extends ComponentVerifier {
 
 			return combined;
 		} catch (BLSSignatureException e) {
-			logger.error("Unable to get the combined signature for the current audit commitment: {}", auditCommit);
+			logger.error("Unable to get the combined signature for the current audit commitment: {} with BLS combiner({},{})", auditCommit, numberOfPeers, threshold);
 			return null;
 		} catch (CertException e) {
-			logger.error("Unable to get the combined signature for the current audit commitment: {}", auditCommit);
+			logger.error("Unable to get the combined signature for the current audit commitment: {} with BLS combiner({},{})", auditCommit, numberOfPeers, threshold);
 			return null;
 		}
 	}

@@ -39,6 +39,11 @@ import com.vvote.thirdparty.json.orgjson.JSONObject;
  */
 public class FileMessage extends TypedJSONMessage {
 
+	@Override
+	public String toString() {
+		return "FileMessage [filesize=" + this.filesize + ", submissionId=" + this.submissionId + ", _digest=" + this._digest + ", digest=" + this.digest + ", fileName=" + this.fileName + "]";
+	}
+
 	/**
 	 * Provides logging for the class
 	 */
