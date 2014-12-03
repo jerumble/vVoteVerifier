@@ -96,7 +96,7 @@ public final class OpenedRandomnessCommitments {
 	 */
 	public OpenedRandomnessCommitments(JSONObject json) throws BallotAuditCommitException {
 
-		logger.debug("Creating a new OpenedRandomnessCommitments object: {}", json);
+		//logger.debug("Creating a new OpenedRandomnessCommitments object: {}", json);
 
 		try {
 			this.serialNo = json.getString(SERIAL_NO);

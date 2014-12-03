@@ -85,7 +85,7 @@ public final class BallotGenerationRandomness {
 
 		JSONObject currentObj = null;
 
-		logger.debug("Creating a new BallotGenerationRandomness object: {}", jsonArray);
+		//logger.debug("Creating a new BallotGenerationRandomness object: {}", jsonArray);
 
 		// create a newOpenedRandomnessCommitments object for each list of
 		// randomness

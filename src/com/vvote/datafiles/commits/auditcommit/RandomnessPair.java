@@ -68,8 +68,7 @@ public final class RandomnessPair {
 			throw new BallotAuditCommitException("Randomness values must be 256 bits or larger (32 bytes) or 64 hex characters");
 		}
 		
-		logger.debug("Creating a new RandomnessPair object: {}, {}", rComm,
-				r);
+		//logger.debug("Creating a new RandomnessPair object: {}, {}", rComm, r);
 		this.witness = rComm;
 		this.randomnessValue = r;
 	}

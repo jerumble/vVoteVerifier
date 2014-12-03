@@ -77,7 +77,7 @@ public final class MixCommitData {
 	 */
 	private MixCommitData(String serverName, JSONObject json) throws MixCommitException {
 
-		logger.debug("Creating a new MixRandomnessCommit object: {}: {}", serverName, json);
+		//logger.debug("Creating a new MixRandomnessCommit object: {}: {}", serverName, json);
 
 		// setup variables
 		this.serverName = serverName;

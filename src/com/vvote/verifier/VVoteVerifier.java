@@ -23,7 +23,9 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -73,9 +75,15 @@ public class VVoteVerifier implements IVerifier {
 		resultsLogger.info("Started vVote Verifier");
 
 		// check for input path provided
-		if (args.length == 1) {
+		if (args.length == 1 || args.length == 2) {
 
 			String basePath = args[0];
+			
+			String verifierToUse = null;
+			
+			if(args.length == 2){
+				verifierToUse = args[1];
+			}
 
 			logger.debug("Base Path provided: {}", basePath);
 			resultsLogger.info("Base Path provided: {}", basePath);
@@ -118,13 +126,13 @@ public class VVoteVerifier implements IVerifier {
 
 					if (!isEmpty) {
 						logger.info("Using Extra Commits folder");
-						verifier = new VVoteVerifier(verifierSpec, basePath, true);
+						verifier = new VVoteVerifier(verifierSpec, basePath, true, verifierToUse);
 					} else {
 						System.exit(1);
 					}
 				} else {
 					logger.info("Using Final Commits folder");
-					verifier = new VVoteVerifier(verifierSpec, basePath, false);
+					verifier = new VVoteVerifier(verifierSpec, basePath, false, verifierToUse);
 				}
 
 				if (verifier != null) {
@@ -151,6 +159,10 @@ public class VVoteVerifier implements IVerifier {
 	 * A list of all verifiers in use in the system
 	 */
 	private Map<String, Verifier> verifiers = null;
+	
+	private List<String> validVerifierSelections = null;
+	
+	private String verifierSelection = null;
 
 	/**
 	 * Constructor for a VVoteVerifier object
@@ -161,9 +173,18 @@ public class VVoteVerifier implements IVerifier {
 	 * 
 	 * @throws VVoteVerifierException
 	 */
-	public VVoteVerifier(VVoteVerifierSpec spec, String basePath, boolean useExtraCommits) throws VVoteVerifierException {
+	public VVoteVerifier(VVoteVerifierSpec spec, String basePath, boolean useExtraCommits, String verifierToUse) throws VVoteVerifierException {
 
 		logger.info("Setting up the vVote Verifier");
+		
+		this.validVerifierSelections = new ArrayList<String>();
+		this.validVerifierSelections.add("-c");
+		this.validVerifierSelections.add("-b");
+		this.validVerifierSelections.add("-m");
+		
+		if(this.validVerifierSelections.contains(verifierToUse)){
+			this.verifierSelection = verifierToUse;
+		}
 
 		this.verifiers = new HashMap<String, Verifier>();
 		try {
@@ -226,6 +247,23 @@ public class VVoteVerifier implements IVerifier {
 		boolean verified = true;
 
 		for (Entry<String, Verifier> verifier : this.verifiers.entrySet()) {
+			
+			if(this.verifierSelection != null){
+				if(this.verifierSelection.equals("-c")){
+					if(!verifier.getKey().equals("Public WBB Commits")){
+						continue;
+					}
+				}else if(this.verifierSelection.equals("-b")){
+					if(!verifier.getKey().equals("Ballot Generation")){
+						continue;
+					}
+				}else if(this.verifierSelection.equals("-m")){
+					if(!verifier.getKey().equals("Vote Packing")){
+						continue;
+					}
+				}
+			}
+			
 			resultsLogger.info("Doing verification on: {}", verifier.getKey());
 
 			if(!verifier.getValue().getSpec().validateSchema()){

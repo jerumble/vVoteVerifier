@@ -77,7 +77,7 @@ public class CommittedBallot {
 	 */
 	private CommittedBallot(JSONObject json) throws BallotGenCommitException {
 
-		logger.debug("Creating a new committed ballot object: {}", json);
+		//logger.debug("Creating a new committed ballot object: {}", json);
 
 		try {
 			this.ciphers = new ArrayList<ElGamalECPoint>();

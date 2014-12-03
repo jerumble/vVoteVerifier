@@ -81,7 +81,7 @@ public final class RandomnessServerCommits {
 	 */
 	public RandomnessServerCommits(String serverName, String filepath) throws MixCommitException {
 
-		logger.debug("Creating a new RandomnessServerCommits object: {}, {}", serverName, filepath);
+		//logger.debug("Creating a new RandomnessServerCommits object: {}, {}", serverName, filepath);
 
 		this.serverName = serverName;
 		this.filePath = filepath;
