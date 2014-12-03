@@ -57,6 +57,7 @@ public class BallotGenerationVerifierTest {
 	 * base path for commits folder
 	 */
 	private final static String basePath = "/media/james/samsung/documents/s3_vvote_results";
+	//private final static String basePath = "./res/sample_commits";
 
 	/**
 	 * The <code>BallotGenerationVerifier</code> used throughout the testing
