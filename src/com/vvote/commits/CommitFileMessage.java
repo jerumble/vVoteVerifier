@@ -149,23 +149,4 @@ public final class CommitFileMessage extends CommitFile {
 	public String toString() {
 		return "CommitFileMessage [jsonMessages=" + this.jsonMessages + ", getFilePath()=" + getFilePath() + ", getIdentifier()=" + getIdentifier() + "]";
 	}
-
-	/**
-	 * Removes any additional messages not needed for a particular verification
-	 * component
-	 * 
-	 * @param relevantMessageTypes
-	 */
-	public void removeAdditionalMessages(List<MessageType> relevantMessageTypes) {
-
-		List<TypedJSONMessage> toRemove = new ArrayList<TypedJSONMessage>();
-
-		for (TypedJSONMessage message : this.jsonMessages) {
-			if (!relevantMessageTypes.contains(message.getType())) {
-				toRemove.add(message);
-			}
-		}
-
-		this.jsonMessages.removeAll(toRemove);
-	}
 }

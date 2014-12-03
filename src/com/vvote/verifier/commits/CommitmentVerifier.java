@@ -107,8 +107,8 @@ public class CommitmentVerifier extends Verifier {
 
 			String currentCommitTime = null;
 
-			MessageDigest hashDigest = null;
-			MessageDigest jointSigDigest = null;
+			MessageDigest commitDigest = null;
+			MessageDigest sigDigest = null;
 			byte[] calculatedJointSig = null;
 			byte[] hash = null;
 			byte[] jointSig = null;
@@ -119,7 +119,7 @@ public class CommitmentVerifier extends Verifier {
 
 					logger.info("Starting the verification of commitment with identifier: {}", identifier);
 
-					hashDigest = MessageDigest.getInstance(PublicWBBConstants.PUBLIC_WBB_DIGEST);
+					commitDigest = MessageDigest.getInstance(PublicWBBConstants.PUBLIC_WBB_DIGEST);
 
 					commitment = this.getDataStore().getFinalCommitments().get(identifier);
 
@@ -131,38 +131,38 @@ public class CommitmentVerifier extends Verifier {
 
 						for (TypedJSONMessage message : commitment.getFileMessage().getJsonMessages()) {
 
-							hashDigest.update(message.getInternalSignableContent().getBytes());
+							commitDigest.update(message.getInternalSignableContent().getBytes());
 
 							if (message.getType() == MessageType.BALLOT_AUDIT_COMMIT || message.getType() == MessageType.MIX_RANDOM_COMMIT || message.getType() == MessageType.BALLOT_GEN_COMMIT
 									|| message.getType() == MessageType.FILE_COMMIT) {
 								File file = new File(outerExtracted, ((FileMessage) message).getFileName());
 								logger.info("Adding hash of file to intermediate hash: {}", file.getName());
-								CryptoUtils.hashFile(file, hashDigest);
+								CryptoUtils.hashFile(file, commitDigest);
 							}
 						}
 
 						// Get the hash value
-						hash = hashDigest.digest();
+						hash = commitDigest.digest();
 
 						String hashString = Utils.byteToBase64String(hash);
 
-						jointSigDigest = MessageDigest.getInstance(PublicWBBConstants.PUBLIC_WBB_DIGEST);
+						sigDigest = MessageDigest.getInstance(PublicWBBConstants.PUBLIC_WBB_DIGEST);
 
 						logger.info("Adding Commit String to signature: {}", PublicWBBConstants.FINAL_COMMIT_MESSAGE_TYPE);
-						jointSigDigest.update(PublicWBBConstants.FINAL_COMMIT_MESSAGE_TYPE.getBytes());
+						sigDigest.update(PublicWBBConstants.FINAL_COMMIT_MESSAGE_TYPE.getBytes());
 						logger.info("Adding Commit Time to signature: {}", currentCommitTime);
-						jointSigDigest.update(currentCommitTime.getBytes());
+						sigDigest.update(currentCommitTime.getBytes());
 						logger.info("Adding hash to signature: {}", hashString);
-						jointSigDigest.update(hash);
+						sigDigest.update(hash);
 
 						String description = commitment.getSignature().getDescription();
 
 						if (description != null) {
 							logger.info("Adding description to signature: {}", description);
-							jointSigDigest.update(description.getBytes());
+							sigDigest.update(description.getBytes());
 						}
 
-						calculatedJointSig = jointSigDigest.digest();
+						calculatedJointSig = sigDigest.digest();
 
 						jointSig = Utils.decodeBase64Data(commitment.getSignature().getSignatureMessage().getJointSig());
 

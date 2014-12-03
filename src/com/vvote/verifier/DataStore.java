@@ -498,8 +498,6 @@ public abstract class DataStore {
 
 				fileMessage = new CommitFileMessage(filePath);
 				identifier = fileMessage.getIdentifier();
-				
-				fileMessage.removeAdditionalMessages(this.relevantMessageTypes);
 
 				this.addFileMessage(identifier, fileMessage);
 			}

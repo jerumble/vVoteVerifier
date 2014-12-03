@@ -130,7 +130,7 @@ public class CancelMessage extends VoteDataMessage {
 	@Override
 	public String getInternalSignableContent() throws JSONException {
 		StringBuilder internalSignableContent = new StringBuilder();
-		internalSignableContent.append(this.getType().toString());
+		internalSignableContent.append(this.getType().getType().toString());
 		internalSignableContent.append(this.getSerialNo());
 		return internalSignableContent.toString();
 	}

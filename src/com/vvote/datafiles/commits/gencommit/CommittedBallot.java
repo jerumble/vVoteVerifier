@@ -139,6 +139,6 @@ public class CommittedBallot {
 
 	@Override
 	public String toString() {
-		return "CommittedBallot [serialNo=" + this.serialNo + ", permutation=" + this.permutation + ", ciphers=" + this.ciphers + ", json=" + "]";
+		return "CommittedBallot [serialNo=" + this.serialNo + ", permutation=" + this.permutation + ", ciphers=" + this.ciphers + "]";
 	}
 }

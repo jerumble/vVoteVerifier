@@ -197,7 +197,6 @@ public class IOUtils {
 
 					File currentOutputFile = new File(getFilePathWithoutExtension(file.getPath()));
 
-					/*
 					if (currentOutputFile.exists()) {
 						if (getFileNameWithoutExtension(entryName).contains(CommitFileNames.WBB_UPLOAD.getFileName())) {
 
@@ -212,7 +211,7 @@ public class IOUtils {
 								}
 							}
 						}
-					}*/
+					}
 
 					// if directory make it
 					if (entryName.endsWith("/")) {
